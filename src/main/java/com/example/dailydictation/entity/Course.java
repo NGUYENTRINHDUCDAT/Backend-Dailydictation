@@ -19,17 +19,12 @@ public class Course {
     private String level;
     private short countOfSentence;
     @Lob
-    @Column(name = "main_audio", columnDefinition = "LONGBLOB")
     private byte[] mainAudio;
-
     @ElementCollection
     @CollectionTable(name = "exercise_audio_files", joinColumns = @JoinColumn(name = "exercise_id"))
     private List<String> sentences;
-
-    @ElementCollection
-    @CollectionTable(name = "exercise_audio_files", joinColumns = @JoinColumn(name = "exercise_id"))
-    @Column(name = "sentence_audio")
-    private List<byte[]> sentenceAudios;
-
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SentenceAudio> sentenceAudios;
     private String transcript;
+
 }

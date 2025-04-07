@@ -18,7 +18,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("create-user")
+    @PostMapping("/create-user")
     public ApiResponse<UserResponse> testCreateUser(@RequestBody UserRequest userRequest) {
         UserResponse userResponse = userService.createUser(userRequest);
         return ApiResponse.<UserResponse>builder()
