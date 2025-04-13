@@ -1,15 +1,15 @@
 package com.example.dailydictation.controller;
 
+import com.example.dailydictation.dto.request.CourseRequest;
 import com.example.dailydictation.dto.response.ApiResponse;
 import com.example.dailydictation.entity.Course;
-import com.example.dailydictation.entity.SentenceAudio;
 import com.example.dailydictation.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -19,50 +19,49 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
-    @PostMapping(value = "/create-course", consumes = "multipart/form-data")
-    @ResponseBody
-    public ApiResponse<Course> create (@RequestParam("name")  String name,
-                                      @RequestParam("level")  String level,
-                                      @RequestParam("countOfSentence") short countOfSentence,
-                                      @RequestParam("mainAudio")MultipartFile mainAudio,
-                                      @RequestParam("sentence")List<String> sentence,
-                                      @RequestParam("sentenceAudio")  MultipartFile [] sentenceAudio,
-                                      @RequestParam("transcript")  String transcript
-                          ) throws IOException {
-        List<SentenceAudio> sentenceAudioList = Arrays.stream(sentenceAudio)
-                .filter(file -> !file.isEmpty()) // Loại bỏ file rỗng
-                .map(file -> {
-                    try {
-                        return SentenceAudio.builder()
-                                .audio(file.getBytes())
-                                .build();
-                    } catch (IOException e) {
-                        throw new RuntimeException("Lỗi khi đọc file: " + file.getOriginalFilename(), e);
-                    }
-                }).toList();
+    @PostMapping(value = "/create-course")
+    public ApiResponse<Void> createCourse(@RequestParam("name") String name,
+                                       @RequestParam("level") String level,
+                                       @RequestParam("countOfSentence") short countOfSentence,
+                                       @RequestParam("mainAudio") MultipartFile mainAudio,
+                                       @RequestParam("sentence") List<String> sentence,
+                                       @RequestParam("sentenceAudio") List<MultipartFile> sentenceAudio,
+                                       @RequestParam("transcript") String transcript) throws IOException {
 
-        Course course = Course.builder()
+        CourseRequest courseRequest = CourseRequest.builder()
                 .name(name)
                 .level(level)
                 .countOfSentence(countOfSentence)
-                .mainAudio(mainAudio.getBytes())
+                .mainAudio(mainAudio)
                 .sentences(sentence)
-                .sentenceAudios(sentenceAudioList)
+                .sentenceAudios(sentenceAudio)
                 .transcript(transcript)
                 .build();
-        for (SentenceAudio audio : sentenceAudioList) {
-            audio.setCourse(course);
-        }
-
-    return ApiResponse.<Course>builder()
-            .result(courseService.create(course))
-            .build();
+        courseService.createCourse(courseRequest);
+        return ApiResponse.<Void> builder()
+                .message("Course created successfully!")
+                .build();
     }
 
+
     @GetMapping("/get-course")
-    public ApiResponse<Course> getCourse (@RequestParam int courseId ){
+    public ApiResponse<Course> getCourse(@RequestParam int courseId) {
         return ApiResponse.<Course>builder()
                 .result(courseService.getCourse(courseId))
                 .build();
+    }
+
+    @GetMapping("/get-list-sentence")
+    public List<String> getListSentence(@RequestParam int courseId) {
+        return courseService.getListSentence(courseId);
+    }
+
+    @PostMapping("/check-sentence")
+    public String checkSentence(@RequestParam int courseId, @RequestBody String userSentence) {
+        return courseService.checkSentence(courseId, userSentence);
+    }
+    @GetMapping("/get-audio-sentence")
+    public String getAudioSentence(@RequestParam int courseId){
+        return courseService.getAudioSentence(courseId);
     }
 }
