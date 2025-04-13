@@ -18,18 +18,12 @@ public class Course {
     private String name;
     private String level;
     private short countOfSentence;
-    @Lob
-    @Column(name = "main_audio", columnDefinition = "LONGBLOB")
-    private byte[] mainAudio;
-
+    private String mainAudio;
     @ElementCollection
-    @CollectionTable(name = "exercise_audio_files", joinColumns = @JoinColumn(name = "exercise_id"))
+    @CollectionTable(name = "exercise_sentence", joinColumns = @JoinColumn(name = "sentence_id"))
     private List<String> sentences;
-
     @ElementCollection
-    @CollectionTable(name = "exercise_audio_files", joinColumns = @JoinColumn(name = "exercise_id"))
-    @Column(name = "sentence_audio")
-    private List<byte[]> sentenceAudios;
-
+    @CollectionTable(name = "exercise_aduio", joinColumns = @JoinColumn(name = "audio_id"))
+    private List<String> sentenceAudios;
     private String transcript;
 }
