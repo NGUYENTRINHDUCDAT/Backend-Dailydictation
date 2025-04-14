@@ -16,8 +16,6 @@ spring:
       ddl-auto: update
     show-sql: true
 
-
-
   cloudinary:
     cloud-name: dc3o5kumf
     api-key: 941627642784641
