@@ -1,12 +1,18 @@
 package com.example.dailydictation.dto.request;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@NoArgsConstructor
 public class AuthenticationRequest {
-    private String userName;
-    private String password;
+    private String username; // Tên đăng nhập
+    private String password; // Mật khẩu
+
+    public String getUserName() {
+        return this.username;
+    }
+
 }
