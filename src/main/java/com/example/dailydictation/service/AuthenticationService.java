@@ -50,11 +50,18 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
         User user = userRepository.findByUserName(authenticationRequest.getUserName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Kiểm tra mật khẩu với BCryptPasswordEncoder
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
-        if (!authenticated)
-            throw new RuntimeException("Unauthenticated");
-        var token = generateToken(user);
+
+        if (!authenticated) {
+            throw new RuntimeException("Invalid credentials");
+        }
+
+        // Tạo token nếu đăng nhập thành công
+        String token = generateToken(user);
+
         return AuthenticationResponse.builder()
                 .token(token)
                 .authenticated(true)
