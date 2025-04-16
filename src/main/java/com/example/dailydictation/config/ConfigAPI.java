@@ -18,4 +18,8 @@ public class ConfigAPI {
             }
         };
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 926e46d67d4175a7d655d127d5679df76124f635

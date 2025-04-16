@@ -15,7 +15,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
   security:
     oauth2:
       client:
@@ -37,6 +36,7 @@ cloudinary:
   cloud-name: dc3o5kumf
   api-key: 941627642784641
   api-secret: f5hyo9oDf4iM03fehOMrld7ASgg
+
 
 jwt:
   signerKey: "A7IHNV7cpx/zw7pnj/O/W3QxSTJF+3Uy+ld4l5U7zvHTfoaXEEipRVUMUwkLx5aQ"
