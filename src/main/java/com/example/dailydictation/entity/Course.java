@@ -26,4 +26,8 @@ public class Course {
     @CollectionTable(name = "exercise_aduio", joinColumns = @JoinColumn(name = "audio_id"))
     private List<String> sentenceAudios;
     private String transcript;
+
+    @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
+    private List<Comment> comments;
+
 }

@@ -116,4 +116,12 @@ public class CourseService {
             return outputStream.toByteArray(); // Trả về mảng byte
         }
     }
+    public String getTranscript(int courseId){
+        return courseRepository.getTranscriptById(courseId);
+
+    }
+    public String getMainAudio (int courseId){
+        return courseRepository.getMainAudioById(courseId);
+    }
+
 }

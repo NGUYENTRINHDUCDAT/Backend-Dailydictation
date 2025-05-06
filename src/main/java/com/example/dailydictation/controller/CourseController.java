@@ -109,4 +109,14 @@ public class CourseController {
     public String getAudioSentence(@RequestParam int courseId) {
         return courseService.getAudioSentence(courseId);
     }
+
+    @GetMapping("/get-transcript")
+    public String getTranscript(@RequestParam int courseId){
+        return courseService.getTranscript(courseId);
+
+    }
+    @GetMapping("/get-main-audio")
+    public String getMainAudio(@RequestParam int courseId){
+        return courseService.getMainAudio(courseId);
+    }
 }

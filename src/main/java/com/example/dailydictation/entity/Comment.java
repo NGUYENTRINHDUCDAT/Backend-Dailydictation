@@ -1,15 +1,9 @@
 package com.example.dailydictation.entity;
 
-import com.example.dailydictation.enums.ERole;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
-
 
 @Getter
 @Setter
@@ -17,23 +11,27 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-public class User {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
-    private String nickName;
-    private String userName;
-    private String password;
 
-    @Column(nullable = false, updatable = false)
+    private String content;
+
+    @Column(name = "create_date", columnDefinition = "datetime(6)")
     private LocalDateTime createDate;
-    private Set<ERole> roles;
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
     @PrePersist
     protected void onCreate() {
         createDate = LocalDateTime.now();
     }
-
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<Comment>comments;
-
 }
