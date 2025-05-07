@@ -6,10 +6,18 @@ import com.example.dailydictation.dto.request.CourseRequest;
 import com.example.dailydictation.entity.Course;
 import com.example.dailydictation.repository.CourseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -74,6 +82,7 @@ public class CourseService {
         String correctSentence = listSentenceOfProgram.get(currentIndex);
         if (userSentence.trim().equalsIgnoreCase(correctSentence.trim())) {
             currentIndex++;
+            System.out.println(currentIndex);
             if (currentIndex >= listSentenceOfProgram.size()) {
                 return " Correct! You’ve completed all sentences!";
             }
@@ -84,9 +93,35 @@ public class CourseService {
     }
    public String getAudioSentence(int courseId){
         List<String>listAudioSentence = courseRepository.findSentenceAudiosByCourseId(courseId);
-        if(listAudioSentence.isEmpty()||currentIndex>listAudioSentence.size()){
+        if(listAudioSentence.isEmpty()||currentIndex >= listAudioSentence.size()){
+
             return "No audio available or all sentences completed!";
         }
+       System.out.println(currentIndex);
         return listAudioSentence.get(currentIndex);
+
    }
+    public byte[] downloadFile(String url) throws IOException {
+        // 1. Tạo URL object từ chuỗi URL
+        URL fileUrl = new URL(url);
+
+        // 2. Mở kết nối HTTP tới URL
+        HttpURLConnection connection = (HttpURLConnection) fileUrl.openConnection();
+        connection.setRequestMethod("GET");
+
+        // 3. Đọc dữ liệu từ InputStream và lưu vào ByteArrayOutputStream
+        try (InputStream inputStream = connection.getInputStream()) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            StreamUtils.copy(inputStream, outputStream);
+            return outputStream.toByteArray(); // Trả về mảng byte
+        }
+    }
+    public String getTranscript(int courseId){
+        return courseRepository.getTranscriptById(courseId);
+
+    }
+    public String getMainAudio (int courseId){
+        return courseRepository.getMainAudioById(courseId);
+    }
+
 }

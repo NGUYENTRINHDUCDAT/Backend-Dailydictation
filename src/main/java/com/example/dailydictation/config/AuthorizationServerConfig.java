@@ -25,7 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 public class AuthorizationServerConfig {
     @Value("${jwt.signerKey}")
     private String signerKey;
-    private final String[] PUBLIC_ENDPOINT = {"/api/create-user", "auth/test-log-in","/api/get-course",};
+    private final String[] PUBLIC_ENDPOINT = {"/api/create-user", "auth/test-log-in","/api/get-course","/api/check-sentence","/api/get-audio-sentence","/api/comment","/api/get-transcript","/api/get-main-audio"};
     private final String[] PRIVATE_ENDPOINT = {"/api/get-all-user","/api/create-course"};
     @Bean
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {

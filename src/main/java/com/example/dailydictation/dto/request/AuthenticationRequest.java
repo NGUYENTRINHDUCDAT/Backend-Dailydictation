@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthenticationRequest {
-    private String username; // Tên đăng nhập
+    private String userName; // Tên đăng nhập
     private String password; // Mật khẩu
 
     public String getUserName() {
-        return this.username;
+        return this.userName;
     }
 
 }

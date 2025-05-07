@@ -21,6 +21,7 @@ public class Auth2Controller {
         data.put("name", principal.getAttribute("name"));
         data.put("email", principal.getAttribute("email"));
         data.put("picture", principal.getAttribute("picture"));
+        data.put("token", principal.getAttributes().get("token"));
         return ResponseEntity.ok(data);
     }
     @GetMapping("/profile")
