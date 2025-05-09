@@ -11,8 +11,4 @@ public class AuthenticationRequest {
     private String userName; // Tên đăng nhập
     private String password; // Mật khẩu
 
-    public String getUserName() {
-        return this.userName;
-    }
-
 }

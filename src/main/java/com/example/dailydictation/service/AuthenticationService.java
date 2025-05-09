@@ -67,6 +67,7 @@ public class AuthenticationService {
                 .token(token)
                 .authenticated(true)
                 .nickName(user.getNickName())
+                .userId(user.getId())
                 .build();
     }
 

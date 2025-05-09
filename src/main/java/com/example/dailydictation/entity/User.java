@@ -1,6 +1,7 @@
 package com.example.dailydictation.entity;
 
 import com.example.dailydictation.enums.ERole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +35,7 @@ public class User {
     }
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment>comments;
 
 }
