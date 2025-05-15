@@ -1,11 +1,14 @@
 package com.example.dailydictation.entity;
 
 import com.example.dailydictation.enums.ERole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 
@@ -30,4 +33,9 @@ public class User {
     protected void onCreate() {
         createDate = LocalDateTime.now();
     }
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Comment>comments;
+
 }

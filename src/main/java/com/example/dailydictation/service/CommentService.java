@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -44,5 +45,7 @@ public class CommentService {
 
         return commentMapper.toCommentResponse(comment);
     }
-
+public List<Comment>getAllComment ( int courseId){
+        return commentRepository.findByCourseId(courseId);
+}
 }

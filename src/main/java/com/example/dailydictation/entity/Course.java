@@ -1,5 +1,6 @@
 package com.example.dailydictation.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,11 +24,12 @@ public class Course {
     @CollectionTable(name = "exercise_sentence", joinColumns = @JoinColumn(name = "sentence_id"))
     private List<String> sentences;
     @ElementCollection
-    @CollectionTable(name = "exercise_audio", joinColumns = @JoinColumn(name = "audio_id"))
+    @CollectionTable(name = "exercise_aduio", joinColumns = @JoinColumn(name = "audio_id"))
     private List<String> sentenceAudios;
     private String transcript;
 
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> comments;
 
 }
