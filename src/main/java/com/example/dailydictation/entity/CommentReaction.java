@@ -1,5 +1,6 @@
 package com.example.dailydictation.entity;
 
+import com.example.dailydictation.enums.Reaction;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,31 +12,28 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Comment {
+public class CommentReaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
 
-    private String content;
-
-    @Column(name = "create_date", columnDefinition = "datetime(6)")
-    private LocalDateTime createDate;
-
-
     @ManyToOne
-    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
-
+    private Comment comment;
 
     @ManyToOne
-    @JoinColumn(name = "parent_id")
-    private Comment parent;
+    private Course course;
+
+    @Enumerated(EnumType.STRING)
+    private Reaction reaction;
+
+    private LocalDateTime createDate;
+
     @PrePersist
     protected void onCreate() {
         createDate = LocalDateTime.now();
     }
+
 }
