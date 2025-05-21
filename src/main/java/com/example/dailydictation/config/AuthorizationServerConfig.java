@@ -25,15 +25,24 @@ import javax.crypto.spec.SecretKeySpec;
 public class AuthorizationServerConfig {
     @Value("${jwt.signerKey}")
     private String signerKey;
-    private final String[] PUBLIC_ENDPOINT = {"/api/create-user", "auth/test-log-in","/api/get-course","/api/check-sentence","/api/get-audio-sentence","/api/comment","/api/get-transcript","/api/get-main-audio","/api/get-all-comment"};
-    private final String[] PRIVATE_ENDPOINT = {"/api/get-all-user","/api/create-course"};
+    private final String[] PUBLIC_ENDPOINT = {
+            "/api/create-user", "auth/test-log-in",
+            "/api/get-course", "/api/check-sentence",
+            "/api/get-audio-sentence", "/api/comment",
+            "/api/get-transcript", "/api/get-main-audio",
+            "/api/get-all-comment", "api/reaction", "/api/show-reaction",
+            "/api/delete-reaction","/api/change-reaction"};
+    private final String[] PRIVATE_ENDPOINT = {"/api/get-all-user", "/api/create-course"};
+
     @Bean
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()// config public api
-                        .requestMatchers(HttpMethod.GET,PRIVATE_ENDPOINT).hasAuthority("SCOPE_ADMIN")
-                        .requestMatchers(HttpMethod.POST,PRIVATE_ENDPOINT).hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.GET, PRIVATE_ENDPOINT).hasAuthority("SCOPE_ADMIN")
+                        .requestMatchers(HttpMethod.POST, PRIVATE_ENDPOINT).hasAuthority("SCOPE_ADMIN")
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINT).permitAll()
+                        .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINT).permitAll()
+                        .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINT).permitAll()
                         .anyRequest().authenticated());
 //
         http.oauth2ResourceServer(oauth2 ->
@@ -62,8 +71,9 @@ public class AuthorizationServerConfig {
 
     @Bean
     PasswordEncoder passwordEncoder() {
-     return new BCryptPasswordEncoder(10);
+        return new BCryptPasswordEncoder(10);
     }
+
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> oauth2UserService() {
         return new CustomOAuth2UserService();

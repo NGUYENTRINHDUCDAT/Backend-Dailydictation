@@ -13,4 +13,5 @@ public class CommentRequest {
     private String content;
     private int userId;
     private int courseId;
+    private Integer parentId;
 }

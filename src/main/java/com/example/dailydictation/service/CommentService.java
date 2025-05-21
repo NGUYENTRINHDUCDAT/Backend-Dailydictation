@@ -27,6 +27,7 @@ public class CommentService {
     @Autowired
     private UserRepository userRepository;
 
+
     public CommentResponse comment(CommentRequest commentRequest) {
         User user = userRepository.findUserById(commentRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -40,12 +41,21 @@ public class CommentService {
                 .createDate(LocalDateTime.now())
                 .user(user)
                 .build();
+        if (commentRequest.getParentId() != null) {
+            Comment parent = commentRepository.findCommentById(commentRequest.getParentId())
+                    .orElseThrow(() -> new RuntimeException("parent id not found"));
+            comment.setParent(parent);
+        }
+
 
         commentRepository.save(comment);
 
         return commentMapper.toCommentResponse(comment);
     }
-public List<Comment>getAllComment ( int courseId){
+
+    public List<Comment> getAllComment(int courseId) {
         return commentRepository.findByCourseId(courseId);
-}
+    }
+
+
 }
