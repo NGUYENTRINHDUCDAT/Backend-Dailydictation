@@ -22,7 +22,7 @@ spring:
           google:
             client-id: 401126444153-1id05mb7bhses2uo8r5ol2qf3uu1uht4.apps.googleusercontent.com
             client-secret: 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
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: http://localhost:8080/login/oauth2/code/google  # Giữ nguyên mặc định
             scope:
               - email
               - profile

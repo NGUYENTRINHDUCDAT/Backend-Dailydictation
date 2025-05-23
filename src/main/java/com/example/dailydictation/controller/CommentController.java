@@ -24,10 +24,11 @@ public class CommentController {
                 .build();
     }
     @GetMapping("/get-all-comment")
-    public ApiResponse<List<Comment>>getAllComment ( @RequestParam int courseId){
-        return ApiResponse.<List<Comment>>builder()
-                .result(commentService.getAllComment( courseId))
+    public ApiResponse<List<CommentResponse>> getAllComment(@RequestParam int courseId) {
+        return ApiResponse.<List<CommentResponse>>builder()
+                .result(commentService.getAllCommentResponses(courseId))
                 .build();
-}
+    }
+
 
 }

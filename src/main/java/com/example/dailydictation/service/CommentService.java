@@ -3,9 +3,11 @@ package com.example.dailydictation.service;
 import com.example.dailydictation.dto.request.CommentRequest;
 import com.example.dailydictation.dto.response.CommentResponse;
 import com.example.dailydictation.entity.Comment;
+import com.example.dailydictation.entity.CommentClosure;
 import com.example.dailydictation.entity.Course;
 import com.example.dailydictation.entity.User;
 import com.example.dailydictation.mapper.CommentMapper;
+import com.example.dailydictation.repository.CommentClosureRepository;
 import com.example.dailydictation.repository.CommentRepository;
 import com.example.dailydictation.repository.CourseRepository;
 import com.example.dailydictation.repository.UserRepository;
@@ -26,7 +28,8 @@ public class CommentService {
     private CourseRepository courseRepository;
     @Autowired
     private UserRepository userRepository;
-
+    @Autowired
+    private CommentClosureRepository closureRepository;
 
     public CommentResponse comment(CommentRequest commentRequest) {
         User user = userRepository.findUserById(commentRequest.getUserId())
@@ -34,21 +37,29 @@ public class CommentService {
         Course course = courseRepository.findCourseById(commentRequest.getCourseId())
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
-        String content = commentRequest.getContent();
-        Comment comment = Comment.builder()
-                .content(content)
-                .course(course)
-                .createDate(LocalDateTime.now())
-                .user(user)
-                .build();
+        Comment comment = new Comment();
+        comment.setContent(commentRequest.getContent());
+        comment.setCourse(course);
+        comment.setUser(user);
+        comment.setCreateDate(LocalDateTime.now());
+
         if (commentRequest.getParentId() != null) {
             Comment parent = commentRepository.findCommentById(commentRequest.getParentId())
-                    .orElseThrow(() -> new RuntimeException("parent id not found"));
+                    .orElseThrow(() -> new RuntimeException("Parent not found"));
             comment.setParent(parent);
         }
 
-
         commentRepository.save(comment);
+
+        // Closure table insert
+        if (commentRequest.getParentId() != null) {
+            List<CommentClosure> ancestors = closureRepository.findAllByIdDescendantId(commentRequest.getParentId());
+            for (CommentClosure ac : ancestors) {
+                closureRepository.save(new CommentClosure(ac.getAncestorId(), comment.getId(), ac.getDepth() + 1));
+            }
+        }
+        // Always insert self link
+        closureRepository.save(new CommentClosure(comment.getId(), comment.getId(), 0));
 
         return commentMapper.toCommentResponse(comment);
     }
@@ -57,5 +68,13 @@ public class CommentService {
         return commentRepository.findByCourseId(courseId);
     }
 
+
+
+    public List<CommentResponse> getAllCommentResponses(int courseId) {
+        List<Comment> comments = commentRepository.findByCourseId(courseId);
+        return comments.stream()
+                .map(commentMapper::toCommentResponse)
+                .toList();
+    }
 
 }
