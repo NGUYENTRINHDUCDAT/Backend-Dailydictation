@@ -1,12 +1,8 @@
 package com.example.dailydictation.dto.response;
 
-import com.example.dailydictation.entity.Course;
-import com.example.dailydictation.entity.User;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -14,7 +10,10 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class CommentResponse {
+    private Integer id;
     private String content;
-    private User user;
-    private Course course;
+    private String userName;
+    private Integer parentId;
+    private Integer courseId;
+    private LocalDateTime createDate;
 }
