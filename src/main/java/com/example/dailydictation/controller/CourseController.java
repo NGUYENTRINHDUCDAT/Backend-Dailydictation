@@ -2,6 +2,7 @@ package com.example.dailydictation.controller;
 
 import com.example.dailydictation.dto.request.CourseRequest;
 import com.example.dailydictation.dto.response.ApiResponse;
+import com.example.dailydictation.dto.response.CourseResponse;
 import com.example.dailydictation.entity.Course;
 import com.example.dailydictation.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,8 @@ public class CourseController {
                                           @RequestParam("mainAudio") MultipartFile mainAudio,
                                           @RequestParam("sentence") List<String> sentence,
                                           @RequestParam("sentenceAudio") List<MultipartFile> sentenceAudio,
-                                          @RequestParam("transcript") String transcript) throws IOException {
+                                          @RequestParam("transcript") String transcript,
+                                          @RequestParam("sectionId") int sectionId) throws IOException {
 
         CourseRequest courseRequest = CourseRequest.builder()
                 .name(name)
@@ -40,6 +42,7 @@ public class CourseController {
                 .sentences(sentence)
                 .sentenceAudios(sentenceAudio)
                 .transcript(transcript)
+                .sectionId(sectionId)
                 .build();
         courseService.createCourse(courseRequest);
         return ApiResponse.<Void>builder()
@@ -89,8 +92,8 @@ public class CourseController {
 
 
     @GetMapping("/get-course")
-    public ApiResponse<Course> getCourse(@RequestParam int courseId) {
-        return ApiResponse.<Course>builder()
+    public ApiResponse<CourseResponse> getCourse(@RequestParam int courseId) {
+        return ApiResponse.<CourseResponse>builder()
                 .result(courseService.getCourse(courseId))
                 .build();
     }
@@ -111,12 +114,21 @@ public class CourseController {
     }
 
     @GetMapping("/get-transcript")
-    public String getTranscript(@RequestParam int courseId){
+    public String getTranscript(@RequestParam int courseId) {
         return courseService.getTranscript(courseId);
 
     }
+
     @GetMapping("/get-main-audio")
-    public String getMainAudio(@RequestParam int courseId){
+    public String getMainAudio(@RequestParam int courseId) {
         return courseService.getMainAudio(courseId);
+    }
+
+    @GetMapping("/show-all-course")
+    public ApiResponse<List<CourseResponse>>showAllCourse(@RequestParam int sectionId){
+        List<CourseResponse> courseResponseList = courseService.showAllCourse(sectionId);
+        return ApiResponse.<List<CourseResponse>>builder()
+                .result(courseResponseList)
+                .build();
     }
 }

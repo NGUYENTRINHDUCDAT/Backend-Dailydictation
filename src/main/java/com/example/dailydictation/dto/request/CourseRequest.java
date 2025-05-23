@@ -20,4 +20,5 @@ public class CourseRequest {
     private List<String> sentences;
     private List<MultipartFile> sentenceAudios;
     private String transcript;
+    private int sectionId;
 }

@@ -31,5 +31,7 @@ public class Course {
     @OneToMany(mappedBy = "course",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> comments;
-
+    @ManyToOne
+    @JoinColumn(name = "section_id")
+    private Section section;
 }

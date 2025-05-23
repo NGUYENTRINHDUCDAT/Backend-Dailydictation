@@ -25,4 +25,6 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     String getTranscriptById(int courseId);
     @Query("SELECT c.mainAudio FROM Course c WHERE c.Id = :courseId")
     String getMainAudioById (int courseId);
+
+    List<Course>findBySectionId(int sectionId);
 }

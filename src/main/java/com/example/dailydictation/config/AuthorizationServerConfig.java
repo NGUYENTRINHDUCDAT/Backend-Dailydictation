@@ -31,8 +31,12 @@ public class AuthorizationServerConfig {
             "/api/get-audio-sentence", "/api/comment",
             "/api/get-transcript", "/api/get-main-audio",
             "/api/get-all-comment", "api/reaction", "/api/show-reaction",
-            "/api/delete-reaction","/api/change-reaction"};
-    private final String[] PRIVATE_ENDPOINT = {"/api/get-all-user", "/api/create-course"};
+            "/api/delete-reaction", "/api/change-reaction",
+            "/api/show-all-topic","/api/create-section",
+            "/api/show-all-section","/api/show-all-course"
+
+            };
+    private final String[] PRIVATE_ENDPOINT = {"/api/get-all-user", "/api/create-course","/api/create-topic"};
 
     @Bean
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
