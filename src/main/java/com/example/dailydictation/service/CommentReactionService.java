@@ -68,7 +68,6 @@ public class CommentReactionService {
 
     @Transactional
     public void deleteReaction(int commentId, int userId, Reaction reaction) {
-
         User user = userRepository.findUserById(commentId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Comment comment = commentRepository.findCommentById(userId)

@@ -33,7 +33,8 @@ public class AuthorizationServerConfig {
             "/api/get-all-comment", "api/reaction", "/api/show-reaction",
             "/api/delete-reaction", "/api/change-reaction",
             "/api/show-all-topic","/api/create-section",
-            "/api/show-all-section","/api/show-all-course"
+            "/api/show-all-section","/api/show-all-course",
+            "/api/update-comment","/api/delete-comment"
 
             };
     private final String[] PRIVATE_ENDPOINT = {"/api/get-all-user", "/api/create-course","/api/create-topic"};

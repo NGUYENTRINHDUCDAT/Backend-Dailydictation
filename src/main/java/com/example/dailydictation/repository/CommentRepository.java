@@ -12,4 +12,8 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     List<Comment> findByCourseId(int courseId);
 
     Optional<Comment> findCommentById(int parentId);
+
+    Comment findByIdAndUserId(int commentId,int userId);
+
+    void deleteByIdAndUserId(int commentId,int userId);
 }

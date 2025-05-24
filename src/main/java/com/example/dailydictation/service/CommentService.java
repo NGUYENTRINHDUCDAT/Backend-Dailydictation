@@ -1,6 +1,7 @@
 package com.example.dailydictation.service;
 
 import com.example.dailydictation.dto.request.CommentRequest;
+import com.example.dailydictation.dto.request.CommentRequestUpdate;
 import com.example.dailydictation.dto.response.CommentResponse;
 import com.example.dailydictation.entity.Comment;
 import com.example.dailydictation.entity.CommentClosure;
@@ -11,6 +12,7 @@ import com.example.dailydictation.repository.CommentClosureRepository;
 import com.example.dailydictation.repository.CommentRepository;
 import com.example.dailydictation.repository.CourseRepository;
 import com.example.dailydictation.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -64,10 +66,6 @@ public class CommentService {
         return commentMapper.toCommentResponse(comment);
     }
 
-    public List<Comment> getAllComment(int courseId) {
-        return commentRepository.findByCourseId(courseId);
-    }
-
 
 
     public List<CommentResponse> getAllCommentResponses(int courseId) {
@@ -76,5 +74,14 @@ public class CommentService {
                 .map(commentMapper::toCommentResponse)
                 .toList();
     }
-
+    public CommentResponse updateComment (CommentRequestUpdate commentRequestUpdate){
+        Comment comment = commentRepository.findByIdAndUserId(commentRequestUpdate.getCommentId(),commentRequestUpdate.getUserId());
+        comment.setContent(commentRequestUpdate.getContent());
+        comment.setCreateDate(LocalDateTime.now());
+        return commentMapper.toCommentResponse(commentRepository.save(comment));
+    }
+    @Transactional
+    public void deleteComment (int commentId,int userId){
+        commentRepository.deleteByIdAndUserId(commentId, userId);
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.dailydictation.controller;
 
 import com.example.dailydictation.dto.request.CommentRequest;
+import com.example.dailydictation.dto.request.CommentRequestUpdate;
 import com.example.dailydictation.dto.response.ApiResponse;
 import com.example.dailydictation.dto.response.CommentResponse;
 import com.example.dailydictation.entity.Comment;
@@ -18,11 +19,12 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/comment")
-    public ApiResponse<CommentResponse> comment(@RequestBody  CommentRequest commentRequest) {
+    public ApiResponse<CommentResponse> comment(@RequestBody CommentRequest commentRequest) {
         return ApiResponse.<CommentResponse>builder()
                 .result(commentService.comment(commentRequest))
                 .build();
     }
+
     @GetMapping("/get-all-comment")
     public ApiResponse<List<CommentResponse>> getAllComment(@RequestParam int courseId) {
         return ApiResponse.<List<CommentResponse>>builder()
@@ -31,4 +33,19 @@ public class CommentController {
     }
 
 
+    @PutMapping("/update-comment")
+    public ApiResponse<CommentResponse> updateComment(@RequestBody CommentRequestUpdate commentRequestUpdate) {
+        CommentResponse commentResponse = commentService.updateComment(commentRequestUpdate);
+        return ApiResponse.<CommentResponse>builder()
+                .result(commentResponse)
+                .build();
+    }
+    @DeleteMapping("/delete-comment")
+    public ApiResponse<Void> deleteComment(@RequestParam int commentId,
+                                           @RequestParam int userId) {
+        commentService.deleteComment(commentId,userId);
+        return ApiResponse.<Void>builder()
+                .message("Deleted comment successfully")
+                .build();
+    }
 }
