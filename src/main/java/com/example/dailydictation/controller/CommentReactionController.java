@@ -21,11 +21,11 @@ public class CommentReactionController {
 
     @PostMapping("/reaction")
     public ApiResponse<CommentReactionResponse> reactOfUser(@RequestBody CommentReactRequest commentReactRequest) {
-        CommentReactionResponse commentReactionResponse = commentReactionService.reactOfUser(commentReactRequest);
-        return ApiResponse.<CommentReactionResponse>builder()
-                .result(commentReactionResponse)
-                .build();
+        System.out.println("Received: " + commentReactRequest); // ← log ra object
+        CommentReactionResponse response = commentReactionService.reactOfUser(commentReactRequest);
+        return ApiResponse.<CommentReactionResponse>builder().result(response).build();
     }
+
 
     @GetMapping("/show-reaction")
     public ApiResponse<List<CommentReactionShowResponse>> showReaction(@RequestParam int courseId) {
@@ -37,11 +37,11 @@ public class CommentReactionController {
 
     @DeleteMapping("/delete-reaction")
     public ApiResponse<Void> deleteReaction(@RequestParam int commentId,
-                                            @RequestParam int userId,
-                                            @RequestParam Reaction reaction) {
+                                            @RequestParam int userId
+                                            ) {
 
 
-        commentReactionService.deleteReaction(commentId, userId, reaction);
+        commentReactionService.deleteReaction(commentId, userId);
         return ApiResponse.<Void>builder()
                 .message("Deleted reaction successfully")
                 .build();

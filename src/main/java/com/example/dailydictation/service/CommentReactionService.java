@@ -67,13 +67,13 @@ public class CommentReactionService {
     }
 
     @Transactional
-    public void deleteReaction(int commentId, int userId, Reaction reaction) {
-        User user = userRepository.findUserById(commentId)
+    public void deleteReaction(int commentId, int userId) {
+        User user = userRepository.findUserById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        Comment comment = commentRepository.findCommentById(userId)
+        Comment comment = commentRepository.findCommentById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
 
-        commentReactionRepository.deleteCommentReactionByCommentAndUserAndReaction(comment, user, reaction);
+        commentReactionRepository.deleteByUserAndComment(user, comment);
     }
 
     public CommentReactionResponse changeReaction(CommentReactRequest commentReactRequest) {

@@ -12,5 +12,7 @@ public interface CommentMapper {
     @Mapping(target = "userName", source = "user.userName")
     @Mapping(target = "courseId", source = "course.id")
     @Mapping(target = "parentId", source = "parent.id")
+    @Mapping(source = "user.id", target = "userId") // Lấy userId từ User trong Comment và gán vào userId của CommentResponse
+
     CommentResponse toCommentResponse(Comment comment);
 }

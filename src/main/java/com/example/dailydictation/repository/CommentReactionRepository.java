@@ -18,4 +18,6 @@ public interface CommentReactionRepository extends JpaRepository<CommentReaction
     CommentReaction findByUserAndCommentAndCourse(User user, Comment comment,Course course);
 
     void deleteCommentReactionByCommentAndUserAndReaction(Comment comment, User user, Reaction reaction);
+
+    void deleteByUserAndComment(User user, Comment comment);
 }
