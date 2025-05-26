@@ -4,6 +4,7 @@ import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.dailydictation.dto.request.CourseRequest;
 import com.example.dailydictation.dto.response.CourseResponse;
+import com.example.dailydictation.dto.response.CourseResponseList;
 import com.example.dailydictation.entity.Course;
 import com.example.dailydictation.entity.Section;
 import com.example.dailydictation.mapper.CourseMapper;
@@ -144,10 +145,16 @@ public class CourseService {
         return courseRepository.getMainAudioById(courseId);
     }
 
-    public List<CourseResponse> showAllCourse (int sectionId){
-        return courseRepository.findBySectionId(sectionId)
-                .stream()
-                .map(courseMapper::toCourseResponse)
-                .collect(Collectors.toList());
+    public List<CourseResponseList> showAllCourse (int sectionId){
+        List<Course> courses = courseRepository.findBySectionId(sectionId);
+        List<CourseResponseList> courseResponseList = new ArrayList<>();
+        for (Course course: courses) {
+            CourseResponseList courseList = new CourseResponseList();
+            courseList.setId(course.getId());
+            courseList.setName(course.getName());
+            courseList.setLevel(course.getLevel());
+            courseResponseList.add(courseList);
+        }
+         return courseResponseList;
     }
 }

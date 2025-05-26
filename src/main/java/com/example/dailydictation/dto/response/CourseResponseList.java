@@ -7,10 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TopicResponse {
+public class CourseResponseList {
     private int id;
-    private String type;
+    private String name;
     private String level;
-    private String img;
-    private int countTopic;
 }

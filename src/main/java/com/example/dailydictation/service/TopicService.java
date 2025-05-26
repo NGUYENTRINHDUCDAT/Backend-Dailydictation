@@ -36,7 +36,7 @@ public class TopicService {
         topic.setType(topicRequest.getType());
         topic.setImg(imageUrl);
         topic.setLevel(topicRequest.getLevel());
-
+        topic.setCountTopic(topicRequest.getCountTopic());
         return topicMapper.toTopicResponse(topicRepository.save(topic));
     }
 

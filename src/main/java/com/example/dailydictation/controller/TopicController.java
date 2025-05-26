@@ -23,9 +23,10 @@ public class TopicController {
     public ApiResponse<TopicResponse> createTopic(
                                                   @RequestParam ("type") String type,
                                                   @RequestParam ("level") String level,
-                                                  @RequestParam ("image") MultipartFile image
+                                                  @RequestParam ("image") MultipartFile image,
+                                                  @RequestParam ("countTopic") int countTopic
                                                   ) throws IOException {
-        TopicRequest topicRequest = new TopicRequest(type,level,image);
+        TopicRequest topicRequest = new TopicRequest(type,level,image,countTopic);
         TopicResponse topicResponse = topicService.createTopic(topicRequest);
         return ApiResponse.<TopicResponse>builder()
                 .result(topicResponse)

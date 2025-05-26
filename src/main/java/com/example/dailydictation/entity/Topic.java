@@ -17,6 +17,7 @@ public class Topic {
     private String type;
     private String level;
     private String img;
+    private int countTopic;
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     private List<Section> sections;
 }
