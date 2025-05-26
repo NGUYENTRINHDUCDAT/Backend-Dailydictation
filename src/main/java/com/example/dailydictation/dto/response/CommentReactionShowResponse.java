@@ -12,4 +12,6 @@ import lombok.*;
 public class CommentReactionShowResponse {
     private Reaction reaction;
     private int commentId;
+    private int userId;
+
 }

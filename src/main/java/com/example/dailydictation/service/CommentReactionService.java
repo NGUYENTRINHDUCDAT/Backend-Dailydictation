@@ -61,8 +61,10 @@ public class CommentReactionService {
             CommentReactionShowResponse commentReactionShowResponse = new CommentReactionShowResponse();
             commentReactionShowResponse.setCommentId(commentReaction.getComment().getId());
             commentReactionShowResponse.setReaction(commentReaction.getReaction());
+            commentReactionShowResponse.setUserId(commentReaction.getUser().getId()); // 👈 Gán userId tại đây
             commentReactionShowResponses.add(commentReactionShowResponse);
         }
+
         return commentReactionShowResponses;
     }
 
@@ -99,4 +101,9 @@ public class CommentReactionService {
         return commentReactionResponse;
 
     }
+
+    public boolean checkUserReaction(int commentId, int userId) {
+        return commentReactionRepository.existsByCommentIdAndUserId(commentId, userId);
+    }
+
 }
