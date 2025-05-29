@@ -42,17 +42,22 @@ public class AuthorizationServerConfig {
     private final String[] PRIVATE_ENDPOINT_ADMIN = {"/api/get-all-user", "/api/create-course", "/api/create-topic"};
 
     // role user
-    private final String[] PRIVATE_ENDPOINT_USER = {"/api/edit-nick-name-user","/api/show-information","/api/edit-image","/api/create-note","/api/show-all-note"};
+    private final String[] PRIVATE_ENDPOINT_USER = {"/api/edit-nick-name-user",
+            "/api/show-information", "/api/edit-image",
+            "/api/create-note", "/api/show-all-note",
+            "/api/update-note", "/api/delete-note"
+    };
+
     @Bean
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()// config public api
                         .requestMatchers(HttpMethod.GET, PRIVATE_ENDPOINT_ADMIN).hasAuthority("SCOPE_ADMIN")
                         .requestMatchers(HttpMethod.POST, PRIVATE_ENDPOINT_ADMIN).hasAuthority("SCOPE_ADMIN")
-
                         .requestMatchers(HttpMethod.GET, PRIVATE_ENDPOINT_USER).hasAuthority("SCOPE_USER")
                         .requestMatchers(HttpMethod.PUT, PRIVATE_ENDPOINT_USER).hasAuthority("SCOPE_USER")
                         .requestMatchers(HttpMethod.POST, PRIVATE_ENDPOINT_USER).hasAuthority("SCOPE_USER")
+                        .requestMatchers(HttpMethod.DELETE, PRIVATE_ENDPOINT_USER).hasAuthority("SCOPE_USER")
                         .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINT).permitAll()
                         .requestMatchers(HttpMethod.DELETE, PUBLIC_ENDPOINT).permitAll()
                         .requestMatchers(HttpMethod.PUT, PUBLIC_ENDPOINT).permitAll()

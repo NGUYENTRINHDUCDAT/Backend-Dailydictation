@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class NoteResponse {
+    private int id;
     private String content;
     private long daysSaved;
     private LocalDate createDate;
