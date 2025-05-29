@@ -9,6 +9,5 @@ import lombok.*;
 @Builder
 public class NoteRequestUpdate {
     private String content;
-    private int userId;
     private int noteId;
 }

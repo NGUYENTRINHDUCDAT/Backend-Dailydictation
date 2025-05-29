@@ -11,8 +11,11 @@ import org.mapstruct.Mapping;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+
 @Mapper(componentModel = "spring")
 public interface NoteMapper {
+
+    @Mapping(target = "id", source = "id")
 
     @Mapping(target = "daysSaved", expression = "java(calculateDaysSaved(note.getCreateDate()))")
     NoteResponse toNoteResponse(Note note);

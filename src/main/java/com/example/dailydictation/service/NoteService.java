@@ -48,13 +48,14 @@ public class NoteService {
                 .map(noteMapper::toNoteResponse)
                 .collect(Collectors.toList());
     }
-    public NoteResponse updateNote (NoteRequestUpdate noteRequestUpdate){
-        Note note = noteRepository.findByIdAndUserId(noteRequestUpdate.getNoteId(),noteRequestUpdate.getUserId()).orElseThrow(()
-                -> new RuntimeException("user not found"));
+    public NoteResponse updateNote(NoteRequestUpdate noteRequestUpdate) {
+        Note note = noteRepository.findById(noteRequestUpdate.getNoteId())
+                .orElseThrow(() -> new RuntimeException("Note not found"));
+
         note.setContent(noteRequestUpdate.getContent());
         return noteMapper.toNoteResponse(noteRepository.save(note));
-
     }
+
     @Transactional
     public void deleteNote (int noteId){
         noteRepository.deleteById(noteId);
