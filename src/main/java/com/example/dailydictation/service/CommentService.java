@@ -60,10 +60,11 @@ public class CommentService {
                 closureRepository.save(new CommentClosure(ac.getAncestorId(), comment.getId(), ac.getDepth() + 1));
             }
         }
+
         // Always insert self link
         closureRepository.save(new CommentClosure(comment.getId(), comment.getId(), 0));
 
-        return commentMapper.toCommentResponse(comment);
+        return commentMapper.toCommentResponse(comment); // Trả về CommentResponse bao gồm userId
     }
 
 
