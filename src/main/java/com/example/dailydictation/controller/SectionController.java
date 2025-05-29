@@ -30,4 +30,10 @@ public class SectionController {
                 .result(sectionResponse)
                 .build();
     }
+    @GetMapping("/search-level")
+    public ApiResponse<List<SectionResponse>>searchLevel (@RequestParam String level){
+        return ApiResponse.<List<SectionResponse>>builder()
+                .result(sectionService.searchLevel(level))
+                .build();
+    }
 }

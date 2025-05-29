@@ -41,4 +41,11 @@ public class SectionService {
                 .map(sectionMapper::toSectionResponse)
                 .collect(Collectors.toList());
     }
+    public List<SectionResponse> searchLevel (String level){
+        return sectionRepository.findSectionsByCourseLevel(level)
+                .stream()
+                .map(sectionMapper::toSectionResponse)
+                .collect(Collectors.toList());
+
+    }
 }

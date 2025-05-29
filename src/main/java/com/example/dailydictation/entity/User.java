@@ -25,7 +25,7 @@ public class User {
     private String nickName;
     private String userName;
     private String password;
-
+    private String img;
     @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
     private Set<ERole> roles;
@@ -37,5 +37,8 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment>comments;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Note> notes;
 
 }
