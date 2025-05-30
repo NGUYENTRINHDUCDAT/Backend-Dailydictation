@@ -58,13 +58,13 @@ public class UserService {
         return userResponseShowNickName;
     }
 
-    public User showInformation(int userId) {
+    public UserResponse showInformation(int userId) {
         User user = userRepository.findUserById(userId).orElseThrow(() -> new RuntimeException("user not found"));
 
-        return user;
+        return userMapper.toUserResponse(user);
     }
 
-    public User editImage(int userId, MultipartFile image) throws IOException {
+    public UserResponse  editImage(int userId, MultipartFile image) throws IOException {
         User user = userRepository.findUserById(userId).orElseThrow(() -> new RuntimeException("user not found"));
         Map img = cloudinary.uploader().upload(
                 image.getBytes(),
@@ -75,6 +75,6 @@ public class UserService {
 
         user.setImg(newImage);
 
-        return userRepository.save(user);
+        return userMapper.toUserResponse( userRepository.save(user));
     }
 }

@@ -11,7 +11,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class UserResponse {
+    private int id;
     private String nickName;
+    private String img;
     private String userName;
     private LocalDateTime createDate;
     private Set<String> roles;

@@ -50,17 +50,17 @@ public class UserController {
                 .build();
     }
     @GetMapping("/show-information")
-    public ApiResponse<User>showNickName (@RequestParam int userId){
+    public ApiResponse<UserResponse>showNickName (@RequestParam int userId){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         System.out.println("userName :"+ authentication.getName());
-        return ApiResponse.<User>builder()
+        return ApiResponse.<UserResponse>builder()
                 .result(userService.showInformation(userId))
                 .build();
     }
     @PutMapping ("/edit-image")
-    public ApiResponse<User>editImg (@RequestParam ("userId") int userId,
+    public ApiResponse<UserResponse>editImg (@RequestParam ("userId") int userId,
                                      @RequestParam("newImage") MultipartFile newImage) throws IOException {
-        return ApiResponse.<User>builder()
+        return ApiResponse.<UserResponse>builder()
                 .result(userService.editImage(userId,newImage))
                 .build();
     }
