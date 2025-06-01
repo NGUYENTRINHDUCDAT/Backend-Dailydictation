@@ -107,7 +107,9 @@ public class CommentService {
             commentResponseShow.setContent(comment.getContent());
             commentResponseShow.setUserName(comment.getUser().getUserName());
             commentResponseShow.setCourseId(comment.getCourse().getId());
+            commentResponseShow.setCourseName(comment.getCourse().getName());
             commentResponseShows.add(commentResponseShow);
+
         }
         return commentResponseShows;
     }

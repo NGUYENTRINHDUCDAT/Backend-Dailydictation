@@ -13,6 +13,7 @@ public class CommentResponseShow {
     private String content;
     private String userName;
     private Integer courseId;
+    private String courseName;
     private LocalDateTime createDate;
 
 }

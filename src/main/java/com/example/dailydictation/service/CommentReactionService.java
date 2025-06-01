@@ -39,13 +39,13 @@ public class CommentReactionService {
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
         Course course = courseRepository.findCourseById(commentReactRequest.getCourseId())
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
-        User userReaction = comment.getUser();
+
 
         Notification notification = Notification.builder()
                 .course(course)
                 .createdAt(LocalDateTime.now())
-                .message(userReaction.getUserName() + " đã bày tỏ cảm về bình luận của bạn")
-                .user(userReaction)
+                .message(user.getUserName() + " đã bày tỏ cảm về bình luận của bạn")
+                .user(user)
                 .build();
         notificationRepository.save(notification);
         CommentReaction commentReaction = CommentReaction.builder()
