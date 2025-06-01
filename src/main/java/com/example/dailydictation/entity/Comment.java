@@ -42,6 +42,10 @@ public class Comment {
 
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommentReaction> reactions = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "notification_id", nullable = true)
+    private Notification notification;
     @PrePersist
     protected void onCreate() {
         createDate = LocalDateTime.now();

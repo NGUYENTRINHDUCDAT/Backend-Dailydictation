@@ -45,7 +45,8 @@ public class AuthorizationServerConfig {
     private final String[] PRIVATE_ENDPOINT_USER = {"/api/edit-nick-name-user",
             "/api/show-information", "/api/edit-image",
             "/api/create-note", "/api/show-all-note",
-            "/api/update-note", "/api/delete-note"
+            "/api/update-note", "/api/delete-note",
+            "/api/show-all-notification","/api/show-comment-user"
     };
 
     @Bean

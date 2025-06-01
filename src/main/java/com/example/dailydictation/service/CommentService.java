@@ -3,20 +3,17 @@ package com.example.dailydictation.service;
 import com.example.dailydictation.dto.request.CommentRequest;
 import com.example.dailydictation.dto.request.CommentRequestUpdate;
 import com.example.dailydictation.dto.response.CommentResponse;
-import com.example.dailydictation.entity.Comment;
-import com.example.dailydictation.entity.CommentClosure;
-import com.example.dailydictation.entity.Course;
-import com.example.dailydictation.entity.User;
+import com.example.dailydictation.dto.response.CommentResponseShow;
+import com.example.dailydictation.entity.*;
 import com.example.dailydictation.mapper.CommentMapper;
-import com.example.dailydictation.repository.CommentClosureRepository;
-import com.example.dailydictation.repository.CommentRepository;
-import com.example.dailydictation.repository.CourseRepository;
-import com.example.dailydictation.repository.UserRepository;
+import com.example.dailydictation.repository.*;
 import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,25 +29,37 @@ public class CommentService {
     private UserRepository userRepository;
     @Autowired
     private CommentClosureRepository closureRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
+
 
     public CommentResponse comment(CommentRequest commentRequest) {
         User user = userRepository.findUserById(commentRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Course course = courseRepository.findCourseById(commentRequest.getCourseId())
                 .orElseThrow(() -> new RuntimeException("Course not found"));
-
+        String message = user.getUserName();
         Comment comment = new Comment();
         comment.setContent(commentRequest.getContent());
         comment.setCourse(course);
         comment.setUser(user);
         comment.setCreateDate(LocalDateTime.now());
+        Notification notification = null;
 
         if (commentRequest.getParentId() != null) {
             Comment parent = commentRepository.findCommentById(commentRequest.getParentId())
                     .orElseThrow(() -> new RuntimeException("Parent not found"));
             comment.setParent(parent);
+            User newUser = comment.getUser();
+            Notification createNotification = Notification.builder()
+                    .createdAt(LocalDateTime.now())
+                    .course(course)
+                    .user(newUser)
+                    .message(message + " đã nhắc đến bạn trong một bình luận")
+                    .build();
+            notification = notificationRepository.save(createNotification);
         }
-
+        comment.setNotification(notification);
         commentRepository.save(comment);
 
         // Closure table insert
@@ -68,21 +77,38 @@ public class CommentService {
     }
 
 
-
     public List<CommentResponse> getAllCommentResponses(int courseId) {
         List<Comment> comments = commentRepository.findByCourseId(courseId);
         return comments.stream()
                 .map(commentMapper::toCommentResponse)
                 .toList();
     }
-    public CommentResponse updateComment (CommentRequestUpdate commentRequestUpdate){
-        Comment comment = commentRepository.findByIdAndUserId(commentRequestUpdate.getCommentId(),commentRequestUpdate.getUserId());
+
+    public CommentResponse updateComment(CommentRequestUpdate commentRequestUpdate) {
+        Comment comment = commentRepository.findByIdAndUserId(commentRequestUpdate.getCommentId(), commentRequestUpdate.getUserId());
         comment.setContent(commentRequestUpdate.getContent());
         comment.setCreateDate(LocalDateTime.now());
         return commentMapper.toCommentResponse(commentRepository.save(comment));
     }
+
     @Transactional
-    public void deleteComment (int commentId,int userId){
+    public void deleteComment(int commentId, int userId) {
         commentRepository.deleteByIdAndUserId(commentId, userId);
+    }
+
+
+    public List<CommentResponseShow> showCommentUser(int userId) {
+        List<Comment> comments = commentRepository.findAllByUserId(userId);
+        List<CommentResponseShow> commentResponseShows = new ArrayList<>();
+        for (Comment comment : comments) {
+          CommentResponseShow commentResponseShow = new CommentResponseShow();
+          commentResponseShow.setCreateDate(comment.getCreateDate());
+            commentResponseShow.setId(comment.getId());
+            commentResponseShow.setContent(comment.getContent());
+            commentResponseShow.setUserName(comment.getUser().getUserName());
+            commentResponseShow.setCourseId(comment.getCourse().getId());
+            commentResponseShows.add(commentResponseShow);
+        }
+        return commentResponseShows;
     }
 }

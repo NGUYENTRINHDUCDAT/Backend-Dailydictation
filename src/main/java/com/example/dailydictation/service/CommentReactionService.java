@@ -3,16 +3,10 @@ package com.example.dailydictation.service;
 import com.example.dailydictation.dto.request.CommentReactRequest;
 import com.example.dailydictation.dto.response.CommentReactionResponse;
 import com.example.dailydictation.dto.response.CommentReactionShowResponse;
-import com.example.dailydictation.entity.Comment;
-import com.example.dailydictation.entity.CommentReaction;
-import com.example.dailydictation.entity.Course;
-import com.example.dailydictation.entity.User;
+import com.example.dailydictation.entity.*;
 import com.example.dailydictation.enums.Reaction;
 import com.example.dailydictation.mapper.CommentReactionMapper;
-import com.example.dailydictation.repository.CommentReactionRepository;
-import com.example.dailydictation.repository.CommentRepository;
-import com.example.dailydictation.repository.CourseRepository;
-import com.example.dailydictation.repository.UserRepository;
+import com.example.dailydictation.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,6 +29,9 @@ public class CommentReactionService {
     @Autowired
     private CommentReactionMapper commentReactionMapper;
 
+    @Autowired
+    private NotificationRepository notificationRepository;
+
     public CommentReactionResponse reactOfUser(CommentReactRequest commentReactRequest) {
         User user = userRepository.findUserById(commentReactRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -42,6 +39,15 @@ public class CommentReactionService {
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
         Course course = courseRepository.findCourseById(commentReactRequest.getCourseId())
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
+        User userReaction = comment.getUser();
+
+        Notification notification = Notification.builder()
+                .course(course)
+                .createdAt(LocalDateTime.now())
+                .message(userReaction.getUserName() + " đã bày tỏ cảm về bình luận của bạn")
+                .user(userReaction)
+                .build();
+        notificationRepository.save(notification);
         CommentReaction commentReaction = CommentReaction.builder()
                 .user(user)
                 .comment(comment)
@@ -86,13 +92,13 @@ public class CommentReactionService {
         Course course = courseRepository.findCourseById(commentReactRequest.getCourseId())
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
 
-        CommentReaction commentReaction = commentReactionRepository.findByUserAndCommentAndCourse(user, comment,course);
+        CommentReaction commentReaction = commentReactionRepository.findByUserAndCommentAndCourse(user, comment, course);
         commentReaction.setReaction(commentReactRequest.getReaction());
         commentReaction.setCreateDate(LocalDateTime.now());
-     CommentReaction commentReactionUpdate=  commentReactionRepository.save(commentReaction);
+        CommentReaction commentReactionUpdate = commentReactionRepository.save(commentReaction);
 
-       CommentReactionResponse commentReactionResponse = new CommentReactionResponse();
-       commentReactionResponse.setUserId(commentReactionUpdate.getUser().getId());
+        CommentReactionResponse commentReactionResponse = new CommentReactionResponse();
+        commentReactionResponse.setUserId(commentReactionUpdate.getUser().getId());
         commentReactionResponse.setCourseId(commentReactionUpdate.getCourse().getId());
         commentReactionResponse.setCommentId(commentReactionUpdate.getComment().getId());
         commentReactionResponse.setReaction(commentReactionUpdate.getReaction());

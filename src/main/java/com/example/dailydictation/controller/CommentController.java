@@ -4,6 +4,7 @@ import com.example.dailydictation.dto.request.CommentRequest;
 import com.example.dailydictation.dto.request.CommentRequestUpdate;
 import com.example.dailydictation.dto.response.ApiResponse;
 import com.example.dailydictation.dto.response.CommentResponse;
+import com.example.dailydictation.dto.response.CommentResponseShow;
 import com.example.dailydictation.entity.Comment;
 import com.example.dailydictation.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,12 @@ public class CommentController {
         commentService.deleteComment(commentId,userId);
         return ApiResponse.<Void>builder()
                 .message("Deleted comment successfully")
+                .build();
+    }
+    @GetMapping("/show-comment-user")
+    public ApiResponse<List<CommentResponseShow>> showCommentUser(@RequestParam int userId) {
+        return ApiResponse.<List<CommentResponseShow>>builder()
+                .result(commentService.showCommentUser(userId))
                 .build();
     }
 }
