@@ -21,5 +21,6 @@ public class NotificationResponse {
     private int user;
     private  int course;
     private String message;
+    private String courseName;
     private LocalDateTime createdAt;
 }

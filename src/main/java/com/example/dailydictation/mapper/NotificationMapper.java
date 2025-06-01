@@ -10,7 +10,8 @@ import org.mapstruct.Mappings;
 public interface NotificationMapper {
     @Mappings({
             @Mapping(source = "user.id", target = "user"),
-            @Mapping(source = "course.id", target = "course")
+            @Mapping(source = "course.id", target = "course"),
+            @Mapping(source = "course.name", target = "courseName")
     })
     NotificationResponse toNotificationResponse(Notification notification);
 }
