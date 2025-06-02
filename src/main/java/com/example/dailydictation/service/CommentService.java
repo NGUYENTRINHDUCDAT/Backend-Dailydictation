@@ -36,29 +36,42 @@ public class CommentService {
     public CommentResponse comment(CommentRequest commentRequest) {
         User user = userRepository.findUserById(commentRequest.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
         Course course = courseRepository.findCourseById(commentRequest.getCourseId())
                 .orElseThrow(() -> new RuntimeException("Course not found"));
+
         String message = user.getUserName();
+
         Comment comment = new Comment();
         comment.setContent(commentRequest.getContent());
         comment.setCourse(course);
         comment.setUser(user);
         comment.setCreateDate(LocalDateTime.now());
+
         Notification notification = null;
 
+        // Nếu đây là reply thì gửi notification cho người viết comment cha
         if (commentRequest.getParentId() != null) {
             Comment parent = commentRepository.findCommentById(commentRequest.getParentId())
                     .orElseThrow(() -> new RuntimeException("Parent not found"));
+
             comment.setParent(parent);
-            User newUser = comment.getUser();
-            Notification createNotification = Notification.builder()
-                    .createdAt(LocalDateTime.now())
-                    .course(course)
-                    .user(newUser)
-                    .message(message + " đã nhắc đến bạn trong một bình luận")
-                    .build();
-            notification = notificationRepository.save(createNotification);
+
+            User parentUser = parent.getUser();
+
+            // Nếu user đang comment KHÔNG PHẢI là chính người viết comment cha → gửi noti
+            if (user.getId() != parentUser.getId()) {
+                Notification createNotification = Notification.builder()
+                        .createdAt(LocalDateTime.now())
+                        .course(course)
+                        .user(parentUser) // người nhận thông báo
+                        .triggerUser(user) // người tạo hành động
+                        .message(message + " đã nhắc đến bạn trong một bình luận")
+                        .build();
+                notification = notificationRepository.save(createNotification);
+            }
         }
+
         comment.setNotification(notification);
         commentRepository.save(comment);
 
@@ -73,7 +86,7 @@ public class CommentService {
         // Always insert self link
         closureRepository.save(new CommentClosure(comment.getId(), comment.getId(), 0));
 
-        return commentMapper.toCommentResponse(comment); // Trả về CommentResponse bao gồm userId
+        return commentMapper.toCommentResponse(comment);
     }
 
 

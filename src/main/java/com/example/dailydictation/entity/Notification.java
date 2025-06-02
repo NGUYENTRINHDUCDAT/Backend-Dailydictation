@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
@@ -13,13 +12,20 @@ import java.util.List;
 @Builder
 @Entity
 public class Notification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    // Người nhận thông báo (ví dụ: người viết comment)
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    // Người tạo ra thông báo (người react)
+    @ManyToOne
+    @JoinColumn(name = "trigger_user_id")
+    private User triggerUser;
 
     @ManyToOne
     @JoinColumn(name = "course_id")
@@ -27,12 +33,10 @@ public class Notification {
 
     private String message;
 
-    @OneToMany(mappedBy = "notification", cascade = CascadeType.ALL)
-    private List<Comment> comments;
-
     private LocalDateTime createdAt;
+
     @PrePersist
     protected void onCreate() {
-        LocalDateTime createAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 }

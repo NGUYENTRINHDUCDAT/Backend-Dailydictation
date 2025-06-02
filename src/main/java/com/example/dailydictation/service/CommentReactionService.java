@@ -38,16 +38,26 @@ public class CommentReactionService {
         Comment comment = commentRepository.findCommentById(commentReactRequest.getCommentId())
                 .orElseThrow(() -> new RuntimeException("Comment not found"));
         Course course = courseRepository.findCourseById(commentReactRequest.getCourseId())
-                .orElseThrow(() -> new RuntimeException("Comment not found"));
+                .orElseThrow(() -> new RuntimeException("Course not found"));
 
+        // Người viết bình luận
+        User commentOwner = comment.getUser();
 
-        Notification notification = Notification.builder()
-                .course(course)
-                .createdAt(LocalDateTime.now())
-                .message(user.getUserName() + " đã bày tỏ cảm về bình luận của bạn")
-                .user(user)
-                .build();
-        notificationRepository.save(notification);
+        // Nếu người tự react vào comment của mình → không gửi notification
+        if (user.getId() != commentOwner.getId()) {
+            Notification notification = Notification.builder()
+                    .course(course)
+                    .createdAt(LocalDateTime.now())
+                    .message(user.getUserName() + " đã bày tỏ cảm xúc về bình luận của bạn")
+                    .user(commentOwner)         // người nhận notification
+                    .triggerUser(user)          // người thực hiện action, tức "triggerUser"
+                    .build();
+
+            notificationRepository.save(notification);
+
+        }
+
+        // Lưu react
         CommentReaction commentReaction = CommentReaction.builder()
                 .user(user)
                 .comment(comment)
@@ -55,6 +65,7 @@ public class CommentReactionService {
                 .reaction(commentReactRequest.getReaction())
                 .createDate(LocalDateTime.now())
                 .build();
+
         return commentReactionMapper.toCommentReaction(commentReactionRepository.save(commentReaction));
     }
 
@@ -67,7 +78,8 @@ public class CommentReactionService {
             CommentReactionShowResponse commentReactionShowResponse = new CommentReactionShowResponse();
             commentReactionShowResponse.setCommentId(commentReaction.getComment().getId());
             commentReactionShowResponse.setReaction(commentReaction.getReaction());
-            commentReactionShowResponse.setUserId(commentReaction.getUser().getId()); // 👈 Gán userId tại đây
+            commentReactionShowResponse.setUserId(commentReaction.getUser().getId());
+
             commentReactionShowResponses.add(commentReactionShowResponse);
         }
 

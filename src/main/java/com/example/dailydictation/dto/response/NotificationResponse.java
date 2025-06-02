@@ -18,9 +18,12 @@ import java.util.List;
 @Builder
 public class NotificationResponse {
     private int id;
-    private int user;
-    private  int course;
+    private int user;          // user nhận thông báo
+    private int course;
     private String message;
     private String courseName;
     private LocalDateTime createdAt;
+
+    private int triggerUserId; // người gây ra thông báo
 }
+
