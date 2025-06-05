@@ -3,18 +3,17 @@ package com.example.dailydictation.dto.response;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.Set;
-
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserResponse {
-    private int id;
-    private String nickName;
-    private String img;
+public class CommentResponseShow {
+    private Integer id;
+    private String content;
     private String userName;
+    private Integer courseId;
+    private String courseName;
     private LocalDateTime createDate;
-    private Set<String> roles;
+
 }

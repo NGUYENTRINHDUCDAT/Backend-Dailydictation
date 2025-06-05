@@ -3,6 +3,7 @@ package com.example.dailydictation.controller;
 import com.example.dailydictation.dto.request.CourseRequest;
 import com.example.dailydictation.dto.response.ApiResponse;
 import com.example.dailydictation.dto.response.CourseResponse;
+import com.example.dailydictation.dto.response.CourseResponseList;
 import com.example.dailydictation.entity.Course;
 import com.example.dailydictation.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,8 +105,8 @@ public class CourseController {
     }
 
     @PostMapping("/check-sentence")
-    public String checkSentence(@RequestParam int courseId, @RequestBody String userSentence) {
-        return courseService.checkSentence(courseId, userSentence);
+    public String checkSentence(@RequestParam int courseId, @RequestParam int userId ,@RequestBody String userSentence) {
+        return courseService.checkSentence(courseId, userSentence,userId);
     }
 
     @GetMapping("/get-audio-sentence")
@@ -125,9 +126,9 @@ public class CourseController {
     }
 
     @GetMapping("/show-all-course")
-    public ApiResponse<List<CourseResponse>>showAllCourse(@RequestParam int sectionId){
-        List<CourseResponse> courseResponseList = courseService.showAllCourse(sectionId);
-        return ApiResponse.<List<CourseResponse>>builder()
+    public ApiResponse<List<CourseResponseList>>showAllCourse(@RequestParam int sectionId){
+        List<CourseResponseList> courseResponseList = courseService.showAllCourse(sectionId);
+        return ApiResponse.<List<CourseResponseList>>builder()
                 .result(courseResponseList)
                 .build();
     }

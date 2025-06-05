@@ -3,21 +3,22 @@ package com.example.dailydictation.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-public class Topic {
+public class FavoriteCourse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String type;
-    private String level;
-    private String img;
-    private int countTopic;
-    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
-    private List<Section> sections;
+
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

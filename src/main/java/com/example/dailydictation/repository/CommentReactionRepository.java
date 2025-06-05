@@ -20,4 +20,6 @@ public interface CommentReactionRepository extends JpaRepository<CommentReaction
     void deleteCommentReactionByCommentAndUserAndReaction(Comment comment, User user, Reaction reaction);
 
     void deleteByUserAndComment(User user, Comment comment);
+
+    boolean existsByCommentIdAndUserId(int commentId, int userId);
 }

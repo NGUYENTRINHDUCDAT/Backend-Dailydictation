@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class CommentReactRequest {
-  private int userId;
-  private  int commentId;
-  private int courseId;
+  private Integer userId;
+  private Integer commentId;
+  private Integer courseId;
   private Reaction reaction;
 }

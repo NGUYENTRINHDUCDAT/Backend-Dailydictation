@@ -11,4 +11,5 @@ public class TopicRequest {
     private String type;
     private String level;
     private MultipartFile img;
+    private int countTopic;
 }

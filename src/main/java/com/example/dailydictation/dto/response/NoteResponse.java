@@ -2,15 +2,15 @@ package com.example.dailydictation.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TopicResponse {
+public class NoteResponse {
     private int id;
-    private String type;
-    private String level;
-    private String img;
-    private int countTopic;
+    private String content;
+    private long daysSaved;
+    private LocalDate createDate;
 }
