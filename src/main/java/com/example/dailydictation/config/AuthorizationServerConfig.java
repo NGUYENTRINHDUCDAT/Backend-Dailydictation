@@ -47,7 +47,7 @@ public class AuthorizationServerConfig {
             "/api/create-note", "/api/show-all-note",
             "/api/update-note", "/api/delete-note",
             "/api/show-all-notification","/api/show-comment-user",
-            "/api/show-practice","/api/create-favorite-course","/api/show-all-favorite-course"
+            "/api/show-practice","/api/create-favorite-course","/api/show-all-favorite-course","/api/create-practice"
     };
 
     @Bean
