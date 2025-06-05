@@ -6,10 +6,15 @@ import com.example.dailydictation.dto.request.CourseRequest;
 import com.example.dailydictation.dto.response.CourseResponse;
 import com.example.dailydictation.dto.response.CourseResponseList;
 import com.example.dailydictation.entity.Course;
+import com.example.dailydictation.entity.Practice;
 import com.example.dailydictation.entity.Section;
+import com.example.dailydictation.entity.User;
+import com.example.dailydictation.enums.EStatus;
 import com.example.dailydictation.mapper.CourseMapper;
 import com.example.dailydictation.repository.CourseRepository;
+import com.example.dailydictation.repository.PracticeRepository;
 import com.example.dailydictation.repository.SectionRepository;
+import com.example.dailydictation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
@@ -41,6 +46,12 @@ public class CourseService {
 
     @Autowired
     CourseMapper courseMapper;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PracticeRepository practiceRepository;
 
     public Course createCourse(CourseRequest courseRequest) throws IOException {
         Section section = sectionRepository.findById(courseRequest.getSectionId()).orElseThrow(() -> new RuntimeException("not found section"));
@@ -90,9 +101,24 @@ public class CourseService {
 
     private int currentIndex = 0;
 
-    public String checkSentence(int courseId, String userSentence) {
+    public String checkSentence(int courseId, String userSentence,int userId) {
+        User user = userRepository.findUserById(userId).orElseThrow(()
+                -> new RuntimeException("user not found"));
+        Course course = courseRepository.findCourseById(courseId)
+                .orElseThrow(() -> new RuntimeException("Course not found"));
         List<String> listSentenceOfProgram = getListSentence(courseId);
         if (currentIndex >= listSentenceOfProgram.size()) {
+            boolean exists = practiceRepository.existsByUserIdAndCourseId(userId, courseId);
+            if (!exists) {
+                Practice practice = Practice.builder()
+                        .user(user)
+                        .status(EStatus.finished)
+                        .course(course)
+                        .score(100)
+                        .build();
+                practiceRepository.save(practice);
+                return "All sentences completed!";
+            }
             return "All sentences completed!";
         }
         String correctSentence = listSentenceOfProgram.get(currentIndex);
@@ -100,7 +126,17 @@ public class CourseService {
             currentIndex++;
             System.out.println(currentIndex);
             if (currentIndex >= listSentenceOfProgram.size()) {
-                return " Correct! You’ve completed all sentences!";
+                boolean exists = practiceRepository.existsByUserIdAndCourseId(userId, courseId);
+                if (!exists) {
+                    Practice practice = Practice.builder()
+                            .user(user)
+                            .status(EStatus.finished)
+                            .course(course)
+                            .score(100)
+                            .build();
+                    practiceRepository.save(practice);
+                    return "All sentences completed!";
+                }
             }
             return " Correct! Go to next sentence.";
         } else {

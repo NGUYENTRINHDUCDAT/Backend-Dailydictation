@@ -105,8 +105,8 @@ public class CourseController {
     }
 
     @PostMapping("/check-sentence")
-    public String checkSentence(@RequestParam int courseId, @RequestBody String userSentence) {
-        return courseService.checkSentence(courseId, userSentence);
+    public String checkSentence(@RequestParam int courseId, @RequestParam int userId ,@RequestBody String userSentence) {
+        return courseService.checkSentence(courseId, userSentence,userId);
     }
 
     @GetMapping("/get-audio-sentence")
