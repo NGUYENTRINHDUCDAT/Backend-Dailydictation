@@ -64,7 +64,7 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
 
-    public UserResponse  editImage(int userId, MultipartFile image) throws IOException {
+    public UserResponse editImage(int userId, MultipartFile image) throws IOException {
         User user = userRepository.findUserById(userId).orElseThrow(() -> new RuntimeException("user not found"));
         Map img = cloudinary.uploader().upload(
                 image.getBytes(),
@@ -75,6 +75,31 @@ public class UserService {
 
         user.setImg(newImage);
 
-        return userMapper.toUserResponse( userRepository.save(user));
+        return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    public void changePassword(int userId, String oldPassword, String newPassword) {
+        User user = userRepository.findUserById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        // So sánh mật khẩu đã mã hóa
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new RuntimeException("Mật khẩu cũ không đúng");
+        }
+
+        // Mã hóa mật khẩu mới trước khi lưu
+        String encodedNewPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedNewPassword);
+
+        userRepository.save(user);
+    }
+
+    public void changGmail(int userId, String gmail) {
+        User user = userRepository.findUserById(userId).
+                orElseThrow(() -> new RuntimeException("User not found"));
+        user.setGmail(gmail);
+        userRepository.save(user);
     }
 }

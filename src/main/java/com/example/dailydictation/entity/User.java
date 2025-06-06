@@ -23,9 +23,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
     private String nickName;
+    private String gmail;
     private String userName;
     private String password;
     private String img;
+    private boolean enabled = false;
+    private String verificationToken;
     @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
     private Set<ERole> roles;

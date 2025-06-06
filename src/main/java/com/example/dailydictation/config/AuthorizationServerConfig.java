@@ -35,7 +35,7 @@ public class AuthorizationServerConfig {
             "/api/show-all-topic", "/api/create-section",
             "/api/show-all-section", "/api/show-all-course",
             "/api/update-comment", "/api/delete-comment",
-            "/api/search-level"
+            "/api/search-level","/auth/register","/auth/verify","/auth/test"
     };
 
     // role admin
@@ -47,7 +47,9 @@ public class AuthorizationServerConfig {
             "/api/create-note", "/api/show-all-note",
             "/api/update-note", "/api/delete-note",
             "/api/show-all-notification","/api/show-comment-user",
-            "/api/show-practice","/api/create-favorite-course","/api/show-all-favorite-course","/api/create-practice"
+            "/api/show-practice","/api/create-favorite-course"
+            ,"/api/show-all-favorite-course","/api/create-practice"
+            ,"/api/change-password","/api/change-gmail"
     };
 
     @Bean
