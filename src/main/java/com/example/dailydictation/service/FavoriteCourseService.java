@@ -50,4 +50,16 @@ public class FavoriteCourseService {
                 .collect(Collectors.toList());
 
     }
+
+    public void deleteFavoriteCourse(int userId, int courseId) {
+        // Tìm FavoriteCourse theo userId và courseId
+        favoriteCourseRepository.findByUserIdAndCourseId(userId, courseId)
+                .ifPresent(favoriteCourseRepository::delete);
+    }
+
+    public boolean isFavorite(int userId, int courseId) {
+        return favoriteCourseRepository.existsByUserIdAndCourseId(userId, courseId);
+    }
+
+
 }
