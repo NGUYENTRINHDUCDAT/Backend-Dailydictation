@@ -32,14 +32,14 @@ public class AuthorizationServerConfig {
             "/api/get-transcript", "/api/get-main-audio",
             "/api/get-all-comment", "api/reaction", "/api/show-reaction",
             "/api/delete-reaction", "/api/change-reaction",
-            "/api/show-all-topic", "/api/create-section",
+            "/api/show-all-topic",
             "/api/show-all-section", "/api/show-all-course",
             "/api/update-comment", "/api/delete-comment",
             "/api/search-level","/auth/register","/auth/verify","/auth/test"
     };
 
     // role admin
-    private final String[] PRIVATE_ENDPOINT_ADMIN = {"/api/get-all-user", "/api/create-course", "/api/create-topic"};
+    private final String[] PRIVATE_ENDPOINT_ADMIN = {"/api/get-all-user", "/api/create-course","/api/create-topic","/api/create-section"};
 
     // role user
     private final String[] PRIVATE_ENDPOINT_USER = {"/api/edit-nick-name-user",
@@ -58,6 +58,7 @@ public class AuthorizationServerConfig {
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINT).permitAll()// config public api
                         .requestMatchers(HttpMethod.GET, PRIVATE_ENDPOINT_ADMIN).hasAuthority("SCOPE_ADMIN")
                         .requestMatchers(HttpMethod.POST, PRIVATE_ENDPOINT_ADMIN).hasAuthority("SCOPE_ADMIN")
+
                         .requestMatchers(HttpMethod.GET, PRIVATE_ENDPOINT_USER).hasAuthority("SCOPE_USER")
                         .requestMatchers(HttpMethod.PUT, PRIVATE_ENDPOINT_USER).hasAuthority("SCOPE_USER")
                         .requestMatchers(HttpMethod.POST, PRIVATE_ENDPOINT_USER).hasAuthority("SCOPE_USER")
