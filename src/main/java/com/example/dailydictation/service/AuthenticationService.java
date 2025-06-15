@@ -49,14 +49,19 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        User user = userRepository.findByUserName(authenticationRequest.getUserName())
+        String input = authenticationRequest.getUserName(); // Đây có thể là username hoặc email
+
+        // Tìm theo username hoặc email
+        User user = userRepository.findByUserName(input)
+                .or(() -> userRepository.findByGmail(input)) // nếu không phải username thì thử là email
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Kiểm tra tài khoản đã verify email chưa
+        // Kiểm tra đã verify chưa
         if (!user.isEnabled()) {
             throw new RuntimeException("Please verify your email before logging in");
         }
 
+        // Kiểm tra mật khẩu
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
 
@@ -64,6 +69,7 @@ public class AuthenticationService {
             throw new RuntimeException("Invalid credentials");
         }
 
+        // Sinh token
         String token = generateToken(user);
 
         return AuthenticationResponse.builder()

@@ -82,6 +82,8 @@ public class AuthenticationController {
         userRepository.save(user);
         return ResponseEntity.ok("Tài khoản đã được xác nhận thành công!");
     }
+
+
     @PostMapping("/test-log-in")
     public ApiResponse<AuthenticationResponse> testLogin(@RequestBody AuthenticationRequest authenticationRequest) {
         System.out.println("Dữ liệu nhận từ FE: " + authenticationRequest); // In dữ liệu nhận được
