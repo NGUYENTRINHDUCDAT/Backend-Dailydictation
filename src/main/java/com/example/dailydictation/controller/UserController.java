@@ -85,4 +85,12 @@ public class UserController {
                 .message("Success")
                 .build();
     }
+    @DeleteMapping("/delete-user")
+    public ApiResponse<Void> deleteUser(@RequestParam int userId) {
+        userService.deleteUser(userId);
+        return ApiResponse.<Void>builder()
+                .message("User deleted successfully.")
+                .build();
+    }
+
 }

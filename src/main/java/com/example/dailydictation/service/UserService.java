@@ -102,4 +102,11 @@ public class UserService {
         user.setGmail(gmail);
         userRepository.save(user);
     }
+
+    public void deleteUser(int userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        userRepository.delete(user);
+    }
+
 }
