@@ -126,4 +126,22 @@ public class CommentService {
         }
         return commentResponseShows;
     }
+
+
+    public List<CommentResponse> getAllComments() {
+        List<Comment> comments = commentRepository.findAll();
+
+        return comments.stream()
+                .map(comment -> buildCommentResponse(comment))
+                .toList();
+    }
+    private CommentResponse buildCommentResponse(Comment comment) {
+        return CommentResponse.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .userId(comment.getUser().getId())
+                .courseId(comment.getCourse().getId())
+                .createDate(comment.getCreateDate())
+                .build();
+    }
 }

@@ -55,4 +55,10 @@ public class CommentController {
                 .result(commentService.showCommentUser(userId))
                 .build();
     }
+    @GetMapping("/all-comments")
+    public ApiResponse<List<CommentResponse>> getAllCommentsInDb() {
+        return ApiResponse.<List<CommentResponse>>builder()
+                .result(commentService.getAllComments())
+                .build();
+    }
 }
