@@ -18,6 +18,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -140,4 +141,12 @@ public class CourseController {
                 .result(courseResponseList)
                 .build();
     }
+    @GetMapping("/all-course-names")
+    public ApiResponse<List<CourseResponseList>> getAllCourseNames() {
+        List<CourseResponseList> courseList = courseService.getAllCourseNames();
+        return ApiResponse.<List<CourseResponseList>>builder()
+                .result(courseList)
+                .build();
+    }
+
 }

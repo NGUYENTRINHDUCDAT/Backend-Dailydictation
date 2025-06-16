@@ -193,4 +193,13 @@ public class CourseService {
         }
          return courseResponseList;
     }
+
+    public List<CourseResponseList> getAllCourseNames() {
+        List<Course> courses = courseRepository.findAll();
+        return courses.stream()
+                .map(course -> new CourseResponseList(course.getId(), course.getName()))
+                .collect(Collectors.toList());
+    }
+
+
 }
