@@ -48,4 +48,9 @@ public class SectionService {
                 .collect(Collectors.toList());
 
     }
+
+    public void deleteSection(int id) {
+        sectionRepository.deleteById(id);
+    }
+
 }

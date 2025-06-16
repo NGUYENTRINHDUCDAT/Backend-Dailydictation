@@ -36,4 +36,12 @@ public class SectionController {
                 .result(sectionService.searchLevel(level))
                 .build();
     }
+    @DeleteMapping("/delete-section/{id}")
+    public ApiResponse<Void> deleteSection(@PathVariable("id") int id) {
+        sectionService.deleteSection(id);
+        return ApiResponse.<Void>builder()
+                .message("Xóa section thành công!")
+                .build();
+    }
+
 }

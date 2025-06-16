@@ -46,4 +46,11 @@ public class TopicService {
                 .map(topicMapper::toTopicResponse)
                 .collect(Collectors.toList());
     }
+
+    public void deleteTopic(int id) {
+        Topic topic = topicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy topic với id: " + id));
+        topicRepository.delete(topic);
+    }
+
 }
