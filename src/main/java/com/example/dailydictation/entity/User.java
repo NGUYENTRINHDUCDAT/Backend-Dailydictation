@@ -23,9 +23,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
     private String nickName;
+    private String gmail;
     private String userName;
     private String password;
     private String img;
+    private boolean enabled = false;
+    private String verificationToken;
     @Column(nullable = false, updatable = false)
     private LocalDateTime createDate;
     private Set<ERole> roles;
@@ -38,7 +41,10 @@ public class User {
     @JsonIgnore
     private List<Comment>comments;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+
     private List<Note> notes;
 
 }

@@ -11,4 +11,9 @@ public class CourseResponseList {
     private int id;
     private String name;
     private String level;
+
+    public CourseResponseList(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }

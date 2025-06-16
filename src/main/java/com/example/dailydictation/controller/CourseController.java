@@ -16,7 +16,9 @@ import org.springframework.web.util.UriUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -28,28 +30,35 @@ public class CourseController {
     @PostMapping(value = "/create-course")
     public ApiResponse<Void> createCourse(@RequestParam("name") String name,
                                           @RequestParam("level") String level,
-                                          @RequestParam("countOfSentence") short countOfSentence,
+                                          @RequestParam("countOfSentence") int countOfSentence,
                                           @RequestParam("mainAudio") MultipartFile mainAudio,
-                                          @RequestParam("sentence") List<String> sentence,
-                                          @RequestParam("sentenceAudio") List<MultipartFile> sentenceAudio,
+                                          @RequestParam("sentence") String[] sentence,
+                                          @RequestParam("sentenceAudio") MultipartFile[] sentenceAudio,
                                           @RequestParam("transcript") String transcript,
                                           @RequestParam("sectionId") int sectionId) throws IOException {
+
+        // In log kiểm tra
+        System.out.println(">> sentences: " + Arrays.toString(sentence));
+        System.out.println(">> sentenceAudio.length: " + sentenceAudio.length);
 
         CourseRequest courseRequest = CourseRequest.builder()
                 .name(name)
                 .level(level)
-                .countOfSentence(countOfSentence)
+                .countOfSentence((short) countOfSentence)
                 .mainAudio(mainAudio)
-                .sentences(sentence)
-                .sentenceAudios(sentenceAudio)
+                .sentences(Arrays.asList(sentence)) // convert về List nếu CourseRequest yêu cầu
+                .sentenceAudios(Arrays.asList(sentenceAudio))
                 .transcript(transcript)
                 .sectionId(sectionId)
                 .build();
+
         courseService.createCourse(courseRequest);
+
         return ApiResponse.<Void>builder()
                 .message("Course created successfully!")
                 .build();
     }
+
 
     @GetMapping("/download")
     public ResponseEntity<byte[]> download(@RequestParam String url) throws IOException {
@@ -132,4 +141,12 @@ public class CourseController {
                 .result(courseResponseList)
                 .build();
     }
+    @GetMapping("/all-course-names")
+    public ApiResponse<List<CourseResponseList>> getAllCourseNames() {
+        List<CourseResponseList> courseList = courseService.getAllCourseNames();
+        return ApiResponse.<List<CourseResponseList>>builder()
+                .result(courseList)
+                .build();
+    }
+
 }

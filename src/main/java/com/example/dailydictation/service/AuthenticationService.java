@@ -49,10 +49,19 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        User user = userRepository.findByUserName(authenticationRequest.getUserName())
+        String input = authenticationRequest.getUserName(); // Đây có thể là username hoặc email
+
+        // Tìm theo username hoặc email
+        User user = userRepository.findByUserName(input)
+                .or(() -> userRepository.findByGmail(input)) // nếu không phải username thì thử là email
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Kiểm tra mật khẩu với BCryptPasswordEncoder
+        // Kiểm tra đã verify chưa
+        if (!user.isEnabled()) {
+            throw new RuntimeException("Please verify your email before logging in");
+        }
+
+        // Kiểm tra mật khẩu
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
 
@@ -60,7 +69,7 @@ public class AuthenticationService {
             throw new RuntimeException("Invalid credentials");
         }
 
-        // Tạo token nếu đăng nhập thành công
+        // Sinh token
         String token = generateToken(user);
 
         return AuthenticationResponse.builder()
@@ -70,6 +79,7 @@ public class AuthenticationService {
                 .userId(user.getId())
                 .build();
     }
+
 
     public String generateToken(User user) {
 //            if u wanna create token . u need to create HEADER and PAYLOAD

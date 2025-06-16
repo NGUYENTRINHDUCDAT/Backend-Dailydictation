@@ -40,4 +40,12 @@ public class TopicController {
                 .result(topic)
                 .build();
     }
+    @DeleteMapping("/delete-topic/{id}")
+    public ApiResponse<Void> deleteTopic(@PathVariable("id") int id) {
+        topicService.deleteTopic(id);
+        return ApiResponse.<Void>builder()
+                .message("Xóa topic thành công!")
+                .build();
+    }
+
 }

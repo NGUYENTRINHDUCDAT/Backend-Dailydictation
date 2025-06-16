@@ -34,34 +34,63 @@ public class UserController {
 
 
     @GetMapping("/get-all-user")
-    public ApiResponse<List<User> >getAllUser() {
+    public ApiResponse<List<User>> getAllUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("userName :"+ authentication.getName());
+        System.out.println("userName :" + authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> System.out.println(grantedAuthority.getAuthority()));
-        return  ApiResponse.<List<User>>builder()
+        return ApiResponse.<List<User>>builder()
                 .result(userService.getAllUser())
                 .build();
     }
-    @PutMapping ("/edit-nick-name-user")
-    public ApiResponse<UserResponseShowNickName>editNickName (@RequestParam int userId,
-                                                              @RequestParam String newNickName){
+
+    @PutMapping("/edit-nick-name-user")
+    public ApiResponse<UserResponseShowNickName> editNickName(@RequestParam int userId,
+                                                              @RequestParam String newNickName) {
         return ApiResponse.<UserResponseShowNickName>builder()
-                .result(userService.editNickName(userId,newNickName))
+                .result(userService.editNickName(userId, newNickName))
                 .build();
     }
+
     @GetMapping("/show-information")
-    public ApiResponse<UserResponse>showNickName (@RequestParam int userId){
+    public ApiResponse<UserResponse> showNickName(@RequestParam int userId) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("userName :"+ authentication.getName());
+        System.out.println("userName :" + authentication.getName());
         return ApiResponse.<UserResponse>builder()
                 .result(userService.showInformation(userId))
                 .build();
     }
-    @PutMapping ("/edit-image")
-    public ApiResponse<UserResponse>editImg (@RequestParam ("userId") int userId,
-                                     @RequestParam("newImage") MultipartFile newImage) throws IOException {
+
+    @PutMapping("/edit-image")
+    public ApiResponse<UserResponse> editImg(@RequestParam("userId") int userId,
+                                             @RequestParam("newImage") MultipartFile newImage) throws IOException {
         return ApiResponse.<UserResponse>builder()
-                .result(userService.editImage(userId,newImage))
+                .result(userService.editImage(userId, newImage))
                 .build();
     }
+    @PutMapping("/change-password")
+    public ApiResponse<Void> changePassword(@RequestParam int userId,
+                                            @RequestParam String password,
+                                            @RequestParam String newPassword) {
+        userService.changePassword(userId, password, newPassword);
+        return ApiResponse.<Void>builder()
+                .message("Success")
+                .build();
+    }
+    @PutMapping("/change-gmail")
+    public ApiResponse<Void> changeGmail(@RequestParam int userId,
+                                         @RequestParam String gmail
+    ) {
+        userService.changGmail(userId, gmail);
+        return ApiResponse.<Void>builder()
+                .message("Success")
+                .build();
+    }
+    @DeleteMapping("/delete-user")
+    public ApiResponse<Void> deleteUser(@RequestParam int userId) {
+        userService.deleteUser(userId);
+        return ApiResponse.<Void>builder()
+                .message("User deleted successfully.")
+                .build();
+    }
+
 }
