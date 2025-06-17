@@ -1,5 +1,6 @@
 package com.example.dailydictation.controller;
 
+import com.example.dailydictation.dto.request.UserEditRequest;
 import com.example.dailydictation.dto.request.UserRequest;
 import com.example.dailydictation.dto.response.ApiResponse;
 import com.example.dailydictation.dto.response.UserResponse;
@@ -92,5 +93,19 @@ public class UserController {
                 .message("User deleted successfully.")
                 .build();
     }
+    @PutMapping("/edit-user")
+    public ApiResponse<UserResponse> editUser(
+            @RequestPart("data") UserEditRequest userEditRequest,
+            @RequestPart(value = "avatar", required = false) MultipartFile avatar) throws IOException {
 
+        if (avatar != null) {
+            userEditRequest.setAvatar(avatar);
+        }
+
+        UserResponse updatedUser = userService.editUser(userEditRequest);
+
+        return ApiResponse.<UserResponse>builder()
+                .result(updatedUser)
+                .build();
+    }
 }

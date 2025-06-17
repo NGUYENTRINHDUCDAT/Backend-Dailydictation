@@ -10,11 +10,18 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class UserResponse {
-    private int id;
+    private Integer id;
     private String nickName;
-    private String img;
     private String userName;
-    private LocalDateTime createDate;
+    private String gmail; // thêm trường này
+    private String img;
     private Set<String> roles;
+    private boolean enabled; // thêm trường này
+
+
+
+
 }
