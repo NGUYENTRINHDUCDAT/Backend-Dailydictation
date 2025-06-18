@@ -5,6 +5,7 @@ import com.example.dailydictation.dto.response.ApiResponse;
 import com.example.dailydictation.dto.response.SectionResponse;
 import com.example.dailydictation.entity.Section;
 import com.example.dailydictation.service.SectionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +18,13 @@ public class SectionController {
     @Autowired
     private SectionService sectionService;
     @PostMapping("/create-section")
-    public ApiResponse<SectionResponse> createSection(@RequestBody SectionRequest sectionRequest){
+    public ApiResponse<SectionResponse> createSection(@Valid @RequestBody SectionRequest sectionRequest){
         SectionResponse sectionResponse = sectionService.createSection(sectionRequest);
         return ApiResponse.<SectionResponse>builder()
                 .result(sectionResponse)
                 .build();
     }
+
     @GetMapping("/show-all-section")
     public ApiResponse<List<SectionResponse>> showAllSection (@RequestParam int topicId){
         List<SectionResponse> sectionResponse =sectionService.showAllSection(topicId);

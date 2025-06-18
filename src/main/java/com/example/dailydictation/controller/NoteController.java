@@ -5,6 +5,7 @@ import com.example.dailydictation.dto.request.NoteRequestUpdate;
 import com.example.dailydictation.dto.response.ApiResponse;
 import com.example.dailydictation.dto.response.NoteResponse;
 import com.example.dailydictation.service.NoteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public class NoteController {
     private NoteService noteService;
 
     @PostMapping("/create-note")
-    public ApiResponse<NoteResponse> createNote(@RequestBody NoteRequest noteRequest) {
+    public ApiResponse<NoteResponse> createNote(@Valid @RequestBody NoteRequest noteRequest) {
         return ApiResponse.<NoteResponse>builder()
                 .result(noteService.createNote(noteRequest))
                 .build();
@@ -31,11 +32,12 @@ public class NoteController {
     }
 
     @PutMapping("/update-note")
-    public ApiResponse<NoteResponse> updateNote(@RequestBody NoteRequestUpdate noteRequestUpdate) {
+    public ApiResponse<NoteResponse> updateNote(@Valid @RequestBody NoteRequestUpdate noteRequestUpdate) {
         return ApiResponse.<NoteResponse>builder()
                 .result(noteService.updateNote(noteRequestUpdate))
                 .build();
     }
+
 
     @DeleteMapping("/delete-note")
     public ApiResponse<Void> deleteNote(@RequestParam int noteId) {

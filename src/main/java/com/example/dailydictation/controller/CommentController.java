@@ -7,6 +7,7 @@ import com.example.dailydictation.dto.response.CommentResponse;
 import com.example.dailydictation.dto.response.CommentResponseShow;
 import com.example.dailydictation.entity.Comment;
 import com.example.dailydictation.service.CommentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,11 +21,12 @@ public class CommentController {
     private CommentService commentService;
 
     @PostMapping("/comment")
-    public ApiResponse<CommentResponse> comment(@RequestBody CommentRequest commentRequest) {
+    public ApiResponse<CommentResponse> comment(@Valid @RequestBody CommentRequest commentRequest) {
         return ApiResponse.<CommentResponse>builder()
                 .result(commentService.comment(commentRequest))
                 .build();
     }
+
 
     @GetMapping("/get-all-comment")
     public ApiResponse<List<CommentResponse>> getAllComment(@RequestParam int courseId) {

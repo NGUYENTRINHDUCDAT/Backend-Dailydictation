@@ -2,6 +2,7 @@ package com.example.dailydictation.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.example.dailydictation.dto.request.UserEditRequest;
 import com.example.dailydictation.dto.request.UserRequest;
 import com.example.dailydictation.dto.response.UserResponse;
 import com.example.dailydictation.dto.response.UserResponseShowNickName;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -107,6 +109,56 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
         userRepository.delete(user);
+    }
+
+    public UserResponse editUser(UserEditRequest request) throws IOException {
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (request.getUserName() != null && !request.getUserName().isEmpty()) {
+            user.setUserName(request.getUserName());
+        }
+
+        if (request.getGmail() != null) {
+            user.setGmail(request.getGmail());
+        }
+
+        if (request.getRole() != null && !request.getRole().isEmpty()) {
+            user.setRoles(Set.of(ERole.valueOf(request.getRole()))); // cập nhật role
+        }
+
+        if (request.getAvatar() != null && !request.getAvatar().isEmpty()) {
+            String imageUrl = uploadImage(request.getAvatar());
+            user.setImg(imageUrl);
+        }
+
+        userRepository.save(user);
+
+        return convertToUserResponse(user);
+    }
+
+    private String uploadImage(MultipartFile avatar) throws IOException {
+        Map uploadResult = cloudinary.uploader().upload(avatar.getBytes(), ObjectUtils.emptyMap());
+        return (String) uploadResult.get("secure_url");
+    }
+
+    private UserResponse convertToUserResponse(User user) {
+        UserResponse response = new UserResponse();
+        response.setId(user.getId());
+        response.setNickName(user.getNickName());
+        response.setUserName(user.getUserName());
+        response.setGmail(user.getGmail());
+        response.setImg(user.getImg());
+        response.setEnabled(user.isEnabled());
+
+        // Chuyển Set<ERole> sang Set<String>
+        Set<String> roleNames = user.getRoles()
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.toSet());
+        response.setRoles(roleNames);
+
+        return response;
     }
 
 }
