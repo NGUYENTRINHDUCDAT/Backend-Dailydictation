@@ -28,7 +28,7 @@ public class CourseRequest {
     @NotEmpty(message = "Danh sách câu không được để trống")
     private List<@NotBlank(message = "Câu không được để trống") String> sentences;
 
-    // Có thể không bắt buộc upload âm thanh từng câu nên không để @NotNull
+    // List<MultipartFile> có thể là null hoặc không, không cần phải là @NotNull hoặc @NotEmpty
     private List<MultipartFile> sentenceAudios;
 
     private String transcript; // Có thể để trống nếu không bắt buộc
