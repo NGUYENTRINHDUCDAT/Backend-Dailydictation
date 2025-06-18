@@ -1,27 +1,34 @@
 package com.example.dailydictation.dto.request;
 
+import jakarta.validation.constraints.*;
+
+import lombok.*;
+
 import org.springframework.web.multipart.MultipartFile;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+
 public class UserEditRequest {
+
+    @NotNull(message = "User ID không được để trống")
     private Integer userId;
+
+    @NotBlank(message = "Username không được để trống")
+    @Size(min = 4, max = 20, message = "Username phải từ 4 đến 20 ký tự")
     private String userName;
+
+    @NotBlank(message = "Gmail không được để trống")
+    @Email(message = "Gmail không đúng định dạng")
     private String gmail;
+
+    @NotBlank(message = "Role không được để trống")
     private String role;
+
     private MultipartFile avatar;
 
-    // Getter và Setter
-    public Integer getUserId() { return userId; }
-    public void setUserId(Integer userId) { this.userId = userId; }
 
-    public String getUserName() { return userName; }
-    public void setUserName(String userName) { this.userName = userName; }
-
-    public String getGmail() { return gmail; }
-    public void setGmail(String gmail) { this.gmail = gmail; }
-
-    public String getRole() { return role; }
-    public void setRole(String role) { this.role = role; }
-
-    public MultipartFile getAvatar() { return avatar; }
-    public void setAvatar(MultipartFile avatar) { this.avatar = avatar; }
 }

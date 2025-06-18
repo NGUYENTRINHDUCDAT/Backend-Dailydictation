@@ -5,6 +5,7 @@ import com.example.dailydictation.dto.response.ApiResponse;
 import com.example.dailydictation.dto.response.TopicResponse;
 import com.example.dailydictation.entity.Topic;
 import com.example.dailydictation.service.TopicService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,18 +21,13 @@ public class TopicController {
 
 
     @PostMapping("/create-topic")
-    public ApiResponse<TopicResponse> createTopic(
-                                                  @RequestParam ("type") String type,
-                                                  @RequestParam ("level") String level,
-                                                  @RequestParam ("image") MultipartFile image,
-                                                  @RequestParam ("countTopic") int countTopic
-                                                  ) throws IOException {
-        TopicRequest topicRequest = new TopicRequest(type,level,image,countTopic);
+    public ApiResponse<TopicResponse> createTopic(@Valid @ModelAttribute TopicRequest topicRequest) throws IOException {
         TopicResponse topicResponse = topicService.createTopic(topicRequest);
         return ApiResponse.<TopicResponse>builder()
                 .result(topicResponse)
                 .build();
     }
+
 
     @GetMapping("/show-all-topic")
     public ApiResponse<List<TopicResponse>> showAllTopic (){

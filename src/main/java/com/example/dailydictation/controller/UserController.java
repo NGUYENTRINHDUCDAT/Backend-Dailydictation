@@ -7,6 +7,7 @@ import com.example.dailydictation.dto.response.UserResponse;
 import com.example.dailydictation.dto.response.UserResponseShowNickName;
 import com.example.dailydictation.entity.User;
 import com.example.dailydictation.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("create-user")
-    public ApiResponse<UserResponse> testCreateUser(@RequestBody UserRequest userRequest) {
-        // In dữ liệu nhận từ frontend
+    public ApiResponse<UserResponse> testCreateUser(@Valid @RequestBody UserRequest userRequest) {
         System.out.println("Dữ liệu nhận từ frontend: " + userRequest);
 
         UserResponse userResponse = userService.createUser(userRequest);
@@ -32,6 +32,7 @@ public class UserController {
                 .result(userResponse)
                 .build();
     }
+
 
 
     @GetMapping("/get-all-user")

@@ -7,6 +7,7 @@ import com.example.dailydictation.dto.response.PracticeResponse;
 import com.example.dailydictation.dto.response.SectionResponse;
 import com.example.dailydictation.service.FavoriteCourseService;
 import com.example.dailydictation.service.PracticeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,12 +22,13 @@ public class FavoriteCourseController {
     private FavoriteCourseService favoriteCourseService;
 
     @PostMapping("/create-favorite-course")
-    public ApiResponse<Void> createFavoriteCourse(@RequestBody FavoriteCourseRequest favoriteCourseRequest){
+    public ApiResponse<Void> createFavoriteCourse(@Valid @RequestBody FavoriteCourseRequest favoriteCourseRequest) {
         favoriteCourseService.createFavoriteCourse(favoriteCourseRequest);
         return ApiResponse.<Void>builder()
                 .message("Success")
                 .build();
     }
+
 
     @GetMapping("/show-all-favorite-course")
     public ApiResponse<List<FavoriteCourseResponse>> showAllFavoriteCourse(@RequestParam int userId){

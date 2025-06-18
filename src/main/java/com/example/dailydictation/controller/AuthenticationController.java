@@ -12,6 +12,7 @@ import com.example.dailydictation.repository.UserRepository;
 import com.example.dailydictation.service.AuthenticationService;
 import com.example.dailydictation.service.MailService;
 import com.nimbusds.jose.JOSEException;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -95,13 +96,12 @@ public class AuthenticationController {
     }
 
     @PostMapping("/introspect")
-    public ApiResponse<IntrospectResponse> testLogin(@RequestBody IntrospectRequest introspectRequest) throws ParseException, JOSEException {
-
+    public ApiResponse<IntrospectResponse> testLogin(@Valid @RequestBody IntrospectRequest introspectRequest) throws ParseException, JOSEException {
         var result = authenticationService.introspect(introspectRequest);
         return ApiResponse.<IntrospectResponse>builder()
                 .result(result)
                 .build();
-
     }
+
 
 }

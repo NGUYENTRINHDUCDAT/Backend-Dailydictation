@@ -6,9 +6,11 @@ import com.example.dailydictation.dto.response.CourseResponse;
 import com.example.dailydictation.dto.response.CourseResponseList;
 import com.example.dailydictation.entity.Course;
 import com.example.dailydictation.service.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -28,29 +30,17 @@ public class CourseController {
     private CourseService courseService;
 
     @PostMapping(value = "/create-course")
-    public ApiResponse<Void> createCourse(@RequestParam("name") String name,
-                                          @RequestParam("level") String level,
-                                          @RequestParam("countOfSentence") int countOfSentence,
-                                          @RequestParam("mainAudio") MultipartFile mainAudio,
-                                          @RequestParam("sentence") String[] sentence,
-                                          @RequestParam("sentenceAudio") MultipartFile[] sentenceAudio,
-                                          @RequestParam("transcript") String transcript,
-                                          @RequestParam("sectionId") int sectionId) throws IOException {
+    public ApiResponse<Void> createCourse(@Valid @ModelAttribute CourseRequest courseRequest, BindingResult bindingResult) throws IOException {
 
-        // In log kiểm tra
-        System.out.println(">> sentences: " + Arrays.toString(sentence));
-        System.out.println(">> sentenceAudio.length: " + sentenceAudio.length);
-
-        CourseRequest courseRequest = CourseRequest.builder()
-                .name(name)
-                .level(level)
-                .countOfSentence((short) countOfSentence)
-                .mainAudio(mainAudio)
-                .sentences(Arrays.asList(sentence)) // convert về List nếu CourseRequest yêu cầu
-                .sentenceAudios(Arrays.asList(sentenceAudio))
-                .transcript(transcript)
-                .sectionId(sectionId)
-                .build();
+        if (bindingResult.hasErrors()) {
+            // Xử lý lỗi validate, trả lỗi về client
+            String errors = bindingResult.getAllErrors().stream()
+                    .map(err -> err.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ApiResponse.<Void>builder()
+                    .message("Validation failed: " + errors)
+                    .build();
+        }
 
         courseService.createCourse(courseRequest);
 
