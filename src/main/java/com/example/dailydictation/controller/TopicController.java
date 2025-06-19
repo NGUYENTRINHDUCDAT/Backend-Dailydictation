@@ -6,6 +6,7 @@ import com.example.dailydictation.dto.response.TopicResponse;
 import com.example.dailydictation.entity.Topic;
 import com.example.dailydictation.service.TopicService;
 import jakarta.validation.Valid;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,14 +20,21 @@ public class TopicController {
     @Autowired
     private TopicService topicService;
 
-
     @PostMapping("/create-topic")
     public ApiResponse<TopicResponse> createTopic(@Valid @ModelAttribute TopicRequest topicRequest) throws IOException {
+        // Kiểm tra và xử lý file img từ topicRequest
+        MultipartFile imgFile = topicRequest.getImg();
+        if (imgFile.isEmpty()) {
+            throw new BadRequestException("Ảnh không được để trống");
+        }
+
         TopicResponse topicResponse = topicService.createTopic(topicRequest);
         return ApiResponse.<TopicResponse>builder()
                 .result(topicResponse)
                 .build();
     }
+
+
 
 
     @GetMapping("/show-all-topic")

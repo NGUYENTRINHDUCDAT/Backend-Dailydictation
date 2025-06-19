@@ -144,4 +144,20 @@ public class CourseController {
                 .result(courseList)
                 .build();
     }
+    @DeleteMapping("/delete-course")
+    public ApiResponse<Void> deleteCourse(@RequestParam int courseId) {
+        try {
+            // Gọi service để xóa khóa học theo ID
+            courseService.deleteCourse(courseId);
+
+            return ApiResponse.<Void>builder()
+                    .message("Course deleted successfully!")
+                    .build();
+        } catch (Exception e) {
+            // Nếu có lỗi xảy ra, trả về thông báo lỗi
+            return ApiResponse.<Void>builder()
+                    .message("Error deleting course: " + e.getMessage())
+                    .build();
+        }
+}
 }
