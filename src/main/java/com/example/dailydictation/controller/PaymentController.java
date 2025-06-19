@@ -65,7 +65,6 @@ public class PaymentController {
         return ResponseEntity.ok(paymentUrl);
     }
 
-    // 👉 Xử lý callback từ VNPay
     @GetMapping("/vnpay-return")
     public ResponseEntity<String> paymentReturn(HttpServletRequest request) throws UnsupportedEncodingException {
         Map<String, String> fields = new TreeMap<>();
@@ -101,16 +100,43 @@ public class PaymentController {
                             .build();
 
                     orderRepository.save(order);
-                    return ResponseEntity.ok("✅ Giao dịch thành công, đơn hàng đã được tạo!");
+
+                    // Trả về HTML chứa liên kết redirect về trang chủ sau khi thanh toán thành công
+                    String redirectUrl = "http://localhost:3000/homepage"; // Đảm bảo đây là URL trang chủ của bạn
+
+                    String htmlResponse = "<html><body>"
+                            + "<h2>Giao dịch thành công!</h2>"
+                            + "<p>Thanh toán của bạn đã được thực hiện thành công. Nhấp vào liên kết dưới đây để trở về trang chủ:</p>"
+                            + "<a href='" + redirectUrl + "'>Về trang chủ</a>"
+                            + "</body></html>";
+
+                    return ResponseEntity.ok(htmlResponse); // Trả về HTML cho người dùng
                 } else {
                     return ResponseEntity.status(404).body("❌ Không tìm thấy user với ID: " + userId);
                 }
             } else {
-                return ResponseEntity.ok("❌ Giao dịch thất bại!");
+                // Trả về HTML chứa liên kết khi giao dịch thất bại
+                String redirectUrl = "http://localhost:3000/homepage"; // Đảm bảo đây là URL trang chủ của bạn
+
+                String htmlResponse = "<html><body>"
+                        + "<h2>Giao dịch thất bại!</h2>"
+                        + "<p>Giao dịch của bạn đã không thành công. Nhấp vào liên kết dưới đây để quay lại trang chủ:</p>"
+                        + "<a href='" + redirectUrl + "'>Về trang chủ</a>"
+                        + "</body></html>";
+
+                return ResponseEntity.ok(htmlResponse); // Trả về HTML cho người dùng khi giao dịch thất bại
             }
         }
 
-        return ResponseEntity.badRequest().body("❌ Sai chữ ký");
+        // Nếu chữ ký sai, trả về lỗi với liên kết
+        String redirectUrl = "http://localhost:3000/homepage"; // Đảm bảo đây là URL trang chủ của bạn
+        String htmlResponse = "<html><body>"
+                + "<h2>Giao dịch không hợp lệ!</h2>"
+                + "<p>Giao dịch của bạn không hợp lệ. Nhấp vào liên kết dưới đây để quay lại trang chủ:</p>"
+                + "<a href='" + redirectUrl + "'>Về trang chủ</a>"
+                + "</body></html>";
+
+        return ResponseEntity.badRequest().body(htmlResponse); // Trả về lỗi và link quay lại trang chủ
     }
 
     private int extractUserId(String orderInfo) {
