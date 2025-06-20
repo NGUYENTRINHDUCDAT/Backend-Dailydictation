@@ -1,11 +1,7 @@
 package com.example.dailydictation.dto.request;
 
-import com.example.dailydictation.entity.User;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.*;
 import lombok.*;
-
-import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -13,6 +9,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class NoteRequest {
+
+    @NotBlank(message = "Nội dung không được để trống")
     private String content;
+
+    @Min(value = 1, message = "userId phải lớn hơn 0")
     private int userId;
 }

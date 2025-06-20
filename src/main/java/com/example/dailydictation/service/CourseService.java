@@ -202,4 +202,13 @@ public class CourseService {
     }
 
 
+    public void deleteCourse(int courseId) {
+        // Kiểm tra xem khóa học có tồn tại trong cơ sở dữ liệu không
+        if (!courseRepository.existsById(courseId)) {
+            throw new IllegalArgumentException("Course not found");
+        }
+
+        // Xóa khóa học
+        courseRepository.deleteById(courseId);
+    }
 }

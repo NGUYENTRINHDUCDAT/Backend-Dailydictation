@@ -4,11 +4,12 @@ import com.example.dailydictation.dto.request.CourseRequest;
 import com.example.dailydictation.dto.response.ApiResponse;
 import com.example.dailydictation.dto.response.CourseResponse;
 import com.example.dailydictation.dto.response.CourseResponseList;
-import com.example.dailydictation.entity.Course;
 import com.example.dailydictation.service.CourseService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.*;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriUtils;
@@ -16,7 +17,6 @@ import org.springframework.web.util.UriUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,31 +27,21 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
 
+    // API tạo khóa học mới
     @PostMapping(value = "/create-course")
-    public ApiResponse<Void> createCourse(@RequestParam("name") String name,
-                                          @RequestParam("level") String level,
-                                          @RequestParam("countOfSentence") int countOfSentence,
-                                          @RequestParam("mainAudio") MultipartFile mainAudio,
-                                          @RequestParam("sentence") String[] sentence,
-                                          @RequestParam("sentenceAudio") MultipartFile[] sentenceAudio,
-                                          @RequestParam("transcript") String transcript,
-                                          @RequestParam("sectionId") int sectionId) throws IOException {
+    public ApiResponse<Void> createCourse(@Valid @ModelAttribute CourseRequest courseRequest, BindingResult bindingResult) throws IOException {
 
-        // In log kiểm tra
-        System.out.println(">> sentences: " + Arrays.toString(sentence));
-        System.out.println(">> sentenceAudio.length: " + sentenceAudio.length);
+        if (bindingResult.hasErrors()) {
+            // Xử lý lỗi validate, trả lỗi về client
+            String errors = bindingResult.getAllErrors().stream()
+                    .map(err -> err.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ApiResponse.<Void>builder()
+                    .message("Validation failed: " + errors)
+                    .build();
+        }
 
-        CourseRequest courseRequest = CourseRequest.builder()
-                .name(name)
-                .level(level)
-                .countOfSentence((short) countOfSentence)
-                .mainAudio(mainAudio)
-                .sentences(Arrays.asList(sentence)) // convert về List nếu CourseRequest yêu cầu
-                .sentenceAudios(Arrays.asList(sentenceAudio))
-                .transcript(transcript)
-                .sectionId(sectionId)
-                .build();
-
+        // Tạo khóa học thông qua service
         courseService.createCourse(courseRequest);
 
         return ApiResponse.<Void>builder()
@@ -59,7 +49,7 @@ public class CourseController {
                 .build();
     }
 
-
+    // API tải file âm thanh
     @GetMapping("/download")
     public ResponseEntity<byte[]> download(@RequestParam String url) throws IOException {
         byte[] fileData = courseService.downloadFile(url);
@@ -86,7 +76,6 @@ public class CourseController {
         return new ResponseEntity<>(fileData, headers, HttpStatus.OK);
     }
 
-
     // Phương thức phụ dùng để trích xuất tên file từ URL
     private String extractFileName(String fileUrl) {
         try {
@@ -100,7 +89,7 @@ public class CourseController {
         }
     }
 
-
+    // API lấy thông tin chi tiết về một khóa học
     @GetMapping("/get-course")
     public ApiResponse<CourseResponse> getCourse(@RequestParam int courseId) {
         return ApiResponse.<CourseResponse>builder()
@@ -108,39 +97,46 @@ public class CourseController {
                 .build();
     }
 
+    // API lấy danh sách các câu trong khóa học
     @GetMapping("/get-list-sentence")
     public List<String> getListSentence(@RequestParam int courseId) {
         return courseService.getListSentence(courseId);
     }
 
+    // API kiểm tra câu người dùng nhập vào có đúng không
     @PostMapping("/check-sentence")
     public String checkSentence(@RequestParam int courseId, @RequestParam int userId ,@RequestBody String userSentence) {
-        return courseService.checkSentence(courseId, userSentence,userId);
+        return courseService.checkSentence(courseId, userSentence, userId);
     }
 
+    // API lấy âm thanh của một câu
     @GetMapping("/get-audio-sentence")
     public String getAudioSentence(@RequestParam int courseId) {
         return courseService.getAudioSentence(courseId);
     }
 
+    // API lấy transcript của khóa học
     @GetMapping("/get-transcript")
     public String getTranscript(@RequestParam int courseId) {
         return courseService.getTranscript(courseId);
-
     }
 
+    // API lấy âm thanh chính của khóa học
     @GetMapping("/get-main-audio")
     public String getMainAudio(@RequestParam int courseId) {
         return courseService.getMainAudio(courseId);
     }
 
+    // API hiển thị tất cả các khóa học trong một section
     @GetMapping("/show-all-course")
-    public ApiResponse<List<CourseResponseList>>showAllCourse(@RequestParam int sectionId){
+    public ApiResponse<List<CourseResponseList>> showAllCourse(@RequestParam int sectionId) {
         List<CourseResponseList> courseResponseList = courseService.showAllCourse(sectionId);
         return ApiResponse.<List<CourseResponseList>>builder()
                 .result(courseResponseList)
                 .build();
     }
+
+    // API lấy tất cả tên khóa học
     @GetMapping("/all-course-names")
     public ApiResponse<List<CourseResponseList>> getAllCourseNames() {
         List<CourseResponseList> courseList = courseService.getAllCourseNames();
@@ -148,5 +144,20 @@ public class CourseController {
                 .result(courseList)
                 .build();
     }
+    @DeleteMapping("/delete-course")
+    public ApiResponse<Void> deleteCourse(@RequestParam int courseId) {
+        try {
+            // Gọi service để xóa khóa học theo ID
+            courseService.deleteCourse(courseId);
 
+            return ApiResponse.<Void>builder()
+                    .message("Course deleted successfully!")
+                    .build();
+        } catch (Exception e) {
+            // Nếu có lỗi xảy ra, trả về thông báo lỗi
+            return ApiResponse.<Void>builder()
+                    .message("Error deleting course: " + e.getMessage())
+                    .build();
+        }
+}
 }

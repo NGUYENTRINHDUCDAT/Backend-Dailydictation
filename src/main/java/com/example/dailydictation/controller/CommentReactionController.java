@@ -7,6 +7,7 @@ import com.example.dailydictation.dto.response.CommentReactionShowResponse;
 import com.example.dailydictation.entity.CommentReaction;
 import com.example.dailydictation.enums.Reaction;
 import com.example.dailydictation.service.CommentReactionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class CommentReactionController {
 
 
     @PostMapping("/reaction")
-    public ApiResponse<CommentReactionResponse> reactOfUser(@RequestBody CommentReactRequest commentReactRequest) {
+    public ApiResponse<CommentReactionResponse> reactOfUser(@Valid @RequestBody CommentReactRequest commentReactRequest) {
         System.out.println("👉 [Reaction Request] userId=" + commentReactRequest.getUserId() +
                 ", commentId=" + commentReactRequest.getCommentId() +
                 ", courseId=" + commentReactRequest.getCourseId() +
@@ -31,7 +32,6 @@ public class CommentReactionController {
                 commentReactRequest.getUserId()
         );
 
-        // Nếu đã tồn tại reaction và người dùng gửi Unlike → XÓA
         if (hasReaction && commentReactRequest.getReaction() == Reaction.Unlike) {
             commentReactionService.deleteReaction(commentReactRequest.getCommentId(), commentReactRequest.getUserId());
             return ApiResponse.<CommentReactionResponse>builder()
@@ -39,14 +39,12 @@ public class CommentReactionController {
                     .build();
         }
 
-        // Nếu đã tồn tại reaction và vẫn là Like → không insert nữa
         if (hasReaction && commentReactRequest.getReaction() == Reaction.Like) {
             return ApiResponse.<CommentReactionResponse>builder()
                     .message("👍 Already liked — no action taken")
                     .build();
         }
 
-        // Nếu chưa có → thực hiện like mới
         CommentReactionResponse response = commentReactionService.reactOfUser(commentReactRequest);
 
         System.out.println("✅ [Reaction Saved] " + response);
