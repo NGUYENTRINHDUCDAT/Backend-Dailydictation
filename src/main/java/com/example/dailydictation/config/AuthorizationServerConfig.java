@@ -35,6 +35,8 @@ public class AuthorizationServerConfig {
             "/api/show-all-topic",
             "/api/show-all-section", "/api/show-all-course",
             "/api/update-comment", "/api/delete-comment",
+            "/auth/reset-password", // 👈 Thêm dòng này
+
             "/api/search-level","/auth/register","/auth/verify","/auth/test","/api/check-order","/api/payment/vnpay-return"
     };
 

@@ -103,5 +103,44 @@ public class AuthenticationController {
                 .build();
     }
 
+    @PostMapping("/reset-password")
+    public ApiResponse<Void> resetPassword(
+            @RequestParam String username,
+            @RequestParam String email) {
+
+        // Tìm user theo username
+        Optional<User> optionalUser = userRepository.findByUserName(username);
+        if (optionalUser.isEmpty()) {
+            throw new RuntimeException("Không tìm thấy người dùng với tên đăng nhập này.");
+        }
+
+        User user = optionalUser.get();
+
+        // Kiểm tra email khớp không
+        if (!user.getGmail().equalsIgnoreCase(email)) {
+            throw new RuntimeException("Email không khớp với tài khoản.");
+        }
+
+        // Tạo mật khẩu mặc định mới
+        String newPassword = "123456";
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+
+        // Gửi email
+        String subject = "Đặt lại mật khẩu - Daily Dictation";
+        String body = "Xin chào " + user.getNickName() + ",\n\n" +
+                "Bạn đã yêu cầu đặt lại mật khẩu.\n" +
+                "Mật khẩu mới của bạn là: " + newPassword + "\n\n" +
+                "Vui lòng đăng nhập và đổi lại mật khẩu ngay để đảm bảo an toàn.\n\n" +
+                "Trân trọng,\nDaily Dictation Team";
+
+        mailService.sendSimpleEmail(user.getGmail(), subject, body);
+
+        return ApiResponse.<Void>builder()
+                .message("Mật khẩu mới đã được gửi đến email của bạn.")
+                .build();
+    }
+
 
 }

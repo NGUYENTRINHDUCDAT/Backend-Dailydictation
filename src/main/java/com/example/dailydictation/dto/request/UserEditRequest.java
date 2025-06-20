@@ -1,5 +1,6 @@
 package com.example.dailydictation.dto.request;
 
+import com.example.dailydictation.enums.ERole;
 import jakarta.validation.constraints.*;
 
 import lombok.*;
